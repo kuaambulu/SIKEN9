@@ -10,7 +10,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ## 🌐 Live Demo
 
-**URL**: [https://kuaambulu.github.io/SIKEN9/pengumumannikah.html](https://kuaambulu.github.io/SIKEN9/index.html)
+**URL**: [https://kuaambulu.github.io/SIKEN9/index.html](https://kuaambulu.github.io/SIKEN9/index.html)
 
 ---
 
