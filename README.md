@@ -2,7 +2,7 @@
 Sistem Infomasi pengumuman Kehendak Nikah (N9) 
 # 📋 Papan Pengumuman Kehendak Nikah - KUA Ambulu
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/index.html)
 [![Version](https://img.shields.io/badge/Version-2.1-blue)](https://github.com/kuaambulu/SIKEN9)
 [![License](https://img.shields.io/badge/License-KUA%20Ambulu-green)](https://github.com/kuaambulu/SIKEN9)
 
@@ -10,7 +10,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ## 🌐 Live Demo
 
-**URL**: [https://kuaambulu.github.io/SIKEN9/pengumumannikah.html](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
+**URL**: [https://kuaambulu.github.io/SIKEN9/pengumumannikah.html](https://kuaambulu.github.io/SIKEN9/index.html)
 
 ---
 
