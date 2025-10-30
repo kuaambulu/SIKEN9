@@ -335,10 +335,10 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 
 ## 📚 Dokumentasi Tambahan
 
-- [Panduan Setup Lengkap](docs/SETUP_GUIDE.md)
-- [FAQ](docs/FAQ.md)
-- [API Documentation](docs/API_DOCS.md)
-- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+- [Panduan Setup Lengkap](Docs/SETUP_GUIDE.md)
+- [FAQ](Docs/FAQ.md)
+- [API Documentation](Docs/API_DOCS.md)
+- [Troubleshooting Guide](Docs/TROUBLESHOOTING.md)
 
 ---
 
