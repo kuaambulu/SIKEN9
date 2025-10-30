@@ -292,6 +292,10 @@ body {
     content: '👩';
 }
 
+.gender-wali .section-title::before {
+    content: '👤';
+}
+
 .data-row {
     display: flex;
     flex-direction: column;
