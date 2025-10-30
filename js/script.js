@@ -5,7 +5,7 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyAWSqtsuL1U50vULFKk
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 4; // 4 rows × 4 columns = 16 items per page (desktop)
+const itemsPerPage = 1; // 1 rows × 4 columns = 4 items per page (desktop)
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -129,7 +129,7 @@ function renderPage() {
     }
 
     // Hitung jumlah halaman
-    const itemsPerPageActual = window.innerWidth <= 768 ? 4 : 16; // 4 untuk mobile, 16 untuk desktop
+    const itemsPerPageActual = window.innerWidth <= 768 ? 1 : 4; // 1 untuk mobile, 4 untuk desktop
     const totalPages = Math.ceil(filteredData.length / itemsPerPageActual);
     
     // Batasi halaman yang valid
@@ -283,4 +283,5 @@ window.addEventListener('resize', function() {
     resizeTimer = setTimeout(function() {
         renderPage();
     }, 250);
+
 });
