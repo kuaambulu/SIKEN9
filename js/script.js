@@ -5,7 +5,7 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyAWSqtsuL1U50vULFKk
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 1; // 1 rows × 4 columns = 4 items per page (desktop)
+const itemsPerPage = 4; // 4 rows × 4 columns = 16 items per page (desktop)
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -129,7 +129,7 @@ function renderPage() {
     }
 
     // Hitung jumlah halaman
-    const itemsPerPageActual = window.innerWidth <= 768 ? 1 : 4; // 1 untuk mobile, 4 untuk desktop
+    const itemsPerPageActual = window.innerWidth <= 768 ? 4 : 16; // 4 untuk mobile, 16 untuk desktop
     const totalPages = Math.ceil(filteredData.length / itemsPerPageActual);
     
     // Batasi halaman yang valid
@@ -194,6 +194,41 @@ function renderPage() {
                     <div class="data-row">
                         <div class="data-label">Alamat</div>
                         <div class="data-value">${item.alamatPerempuan}</div>
+                    </div>
+                </div>
+
+                <div class="section gender-wali">
+                    <div class="section-title">Wali Nikah</div>
+                    <div class="data-row">
+                        <div class="data-label">Jenis Wali</div>
+                        <div class="data-value">${item.jenisWali}</div>
+                    </div>
+                    ${item.jenisWali === 'Nasab' ? `
+                        <div class="data-row">
+                            <div class="data-label">Hubungan</div>
+                            <div class="data-value">${item.hubunganWali || '-'}</div>
+                        </div>
+                    ` : `
+                        <div class="data-row">
+                            <div class="data-label">Sebab</div>
+                            <div class="data-value">${item.sebabWali || '-'}</div>
+                        </div>
+                    `}
+                    <div class="data-row">
+                        <div class="data-label">Nama</div>
+                        <div class="data-value">${item.namaWali}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">Bin</div>
+                        <div class="data-value">${item.binWali}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">TTL</div>
+                        <div class="data-value">${item.ttlWali}</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-label">Alamat</div>
+                        <div class="data-value">${item.alamatWali}</div>
                     </div>
                 </div>
 
@@ -283,5 +318,4 @@ window.addEventListener('resize', function() {
     resizeTimer = setTimeout(function() {
         renderPage();
     }, 250);
-
 });
