@@ -5,7 +5,7 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyAWSqtsuL1U50vULFKk
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 1; // 1 rows × 4 columns = 4 items per page (desktop)
+const itemsPerPage = 3; // 3 rows × 3 columns = 9 items per page (desktop)
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -129,7 +129,7 @@ function renderPage() {
     }
 
     // Hitung jumlah halaman
-    const itemsPerPageActual = window.innerWidth <= 768 ? 1 : 4; // 1 untuk mobile, 4 untuk desktop
+    const itemsPerPageActual = window.innerWidth <= 768 ? 3 : 9; // 3 untuk mobile, 9 untuk desktop
     const totalPages = Math.ceil(filteredData.length / itemsPerPageActual);
     
     // Batasi halaman yang valid
@@ -262,7 +262,14 @@ function renderPage() {
 function changePage(direction) {
     currentPage += direction;
     renderPage();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Scroll ke stats bar (tepat di atas data)
+    const statsBar = document.getElementById('statsBar');
+    if (statsBar) {
+        const yOffset = -20; // offset 20px dari atas
+        const y = statsBar.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    }
 }
 
 // Search function
@@ -319,4 +326,3 @@ window.addEventListener('resize', function() {
         renderPage();
     }, 250);
 });
-
