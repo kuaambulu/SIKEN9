@@ -256,13 +256,13 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 ## 📝 Changelog
 
-### Version 2.1 (2025-01-XX)
+### Version 2.1 (2025-10-30)
 - ✅ File dipisah menjadi HTML, CSS, JS
 - ✅ Footer lengkap dengan info KUA Ambulu
 - ✅ Social media links (Instagram, Facebook, TikTok)
 - ✅ Developer credit
 
-### Version 2.0 (2024-10-XX)
+### Version 2.0 (2025-10-28)
 - ✅ Fitur pencarian real-time
 - ✅ Pagination 4×4 desktop, 1×4 mobile
 - ✅ Sorting berdasarkan tanggal terdekat
@@ -270,7 +270,7 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 - ✅ Tema hijau modern
 - ✅ Stats bar
 
-### Version 1.0 (2024-09-XX)
+### Version 1.0 (2025-10-27)
 - ✅ Basic display pengumuman
 - ✅ Tema biru
 - ✅ Tanpa pagination
@@ -317,7 +317,7 @@ Kontribusi untuk pengembangan sistem ini sangat diterima!
 
 ## 📄 License
 
-Copyright © 2025 Kantor Urusan Agama Kecamatan Ambulu, Kabupaten Jember
+Copyright ©2025 Kantor Urusan Agama Kecamatan Ambulu, Kabupaten Jember
 
 Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai dengan PMA No. 30 Tahun 2024 tentang Pengumuman Kehendak Nikah.
 
