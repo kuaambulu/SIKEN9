@@ -2,7 +2,7 @@
 Sistem Infomasi pengumuman Kehendak Nikah (N9) 
 # 📋 Papan Pengumuman Kehendak Nikah - KUA Ambulu
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/index.html)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
 [![Version](https://img.shields.io/badge/Version-2.1-blue)](https://github.com/kuaambulu/SIKEN9)
 [![License](https://img.shields.io/badge/License-KUA%20Ambulu-green)](https://github.com/kuaambulu/SIKEN9)
 
@@ -10,7 +10,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ## 🌐 Live Demo
 
-**URL**: [https://kuaambulu.github.io/SIKEN9/index.html](https://kuaambulu.github.io/SIKEN9/index.html)
+**URL**: [https://kuaambulu.github.io/SIKEN9/pengumumannikah.html](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
 
 ---
 
@@ -22,8 +22,8 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 - Case-insensitive dan partial match support
 
 ### 📄 Pagination Cerdas
-- **Desktop**: 4 grid (4 kartu per halaman)
-- **Mobile**: 1 grid (1 kartu per halaman)
+- **Desktop**: 4×4 grid (16 kartu per halaman)
+- **Mobile**: 1×4 grid (4 kartu per halaman)
 - Auto-adjust responsive
 
 ### 📅 Sorting Otomatis
@@ -57,7 +57,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ```
 SIKEN9/
-├── index.html               # File HTML utama
+├── pengumumannikah.html    # File HTML utama
 ├── style.css                # Stylesheet untuk tampilan
 ├── script.js                # JavaScript untuk logic
 └── README.md                # Dokumentasi ini
@@ -117,7 +117,7 @@ SIKEN9/
    - Simpan
 
 6. **Akses Website**
-   - https://kuaambulu.github.io/SIKEN9/index.html
+   - https://kuaambulu.github.io/SIKEN9/pengumumannikah.html
 
 ---
 
@@ -132,14 +132,14 @@ const WEBAPP_URL = 'YOUR_WEBAPP_URL_HERE';
 
 ### Ganti Nomor WhatsApp
 
-Edit file `index.html` baris 62:
+Edit file `pengumumannikah.html` baris 62:
 ```html
 <a href="https://wa.me/6282146035081" ...>
 ```
 
 ### Update Media Sosial
 
-Edit file `index.html` baris 75-95:
+Edit file `pengumumannikah.html` baris 75-95:
 ```html
 <a href="https://www.instagram.com/kuaambulu/" ...>
 <a href="https://www.facebook.com/share/1MjeCrXmgN/" ...>
@@ -256,13 +256,13 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 ## 📝 Changelog
 
-### Version 2.1 (2025-10-29)
+### Version 2.1 (2025-01-XX)
 - ✅ File dipisah menjadi HTML, CSS, JS
 - ✅ Footer lengkap dengan info KUA Ambulu
 - ✅ Social media links (Instagram, Facebook, TikTok)
 - ✅ Developer credit
 
-### Version 2.0 (2025-10-28)
+### Version 2.0 (2024-10-XX)
 - ✅ Fitur pencarian real-time
 - ✅ Pagination 4×4 desktop, 1×4 mobile
 - ✅ Sorting berdasarkan tanggal terdekat
@@ -270,7 +270,7 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 - ✅ Tema hijau modern
 - ✅ Stats bar
 
-### Version 1.0 (2025-10-27)
+### Version 1.0 (2024-09-XX)
 - ✅ Basic display pengumuman
 - ✅ Tema biru
 - ✅ Tanpa pagination
@@ -335,10 +335,10 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 
 ## 📚 Dokumentasi Tambahan
 
-- [Panduan Setup Lengkap](Docs/SETUP_GUIDE.md)
-- [FAQ](Docs/FAQ.md)
-- [API Documentation](Docs/API_DOCS.md)
-- [Troubleshooting Guide](Docs/TROUBLESHOOTING.md)
+- [Panduan Setup Lengkap](docs/SETUP_GUIDE.md)
+- [FAQ](docs/FAQ.md)
+- [API Documentation](docs/API_DOCS.md)
+- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
 
 ---
 
