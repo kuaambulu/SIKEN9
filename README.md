@@ -22,8 +22,8 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 - Case-insensitive dan partial match support
 
 ### 📄 Pagination Cerdas
-- **Desktop**: 4×4 grid (16 kartu per halaman)
-- **Mobile**: 1×4 grid (4 kartu per halaman)
+- **Desktop**: 1×4 grid (4 kartu per halaman)
+- **Mobile**: 1×1 grid (1 kartu per halaman)
 - Auto-adjust responsive
 
 ### 📅 Sorting Otomatis
