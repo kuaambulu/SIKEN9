@@ -10,7 +10,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ## 🌐 Live Demo
 
-**URL**: [https://kuaambulu.github.io/SIKEN9/pengumumannikah.html](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
+**URL**: [https://kuaambulu.github.io/SIKEN9/index.html](https://kuaambulu.github.io/SIKEN9/index.html)
 
 ---
 
@@ -57,7 +57,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ```
 SIKEN9/
-├── pengumumannikah.html    # File HTML utama
+├── index.html    # File HTML utama
 ├── style.css                # Stylesheet untuk tampilan
 ├── script.js                # JavaScript untuk logic
 └── README.md                # Dokumentasi ini
@@ -117,7 +117,7 @@ SIKEN9/
    - Simpan
 
 6. **Akses Website**
-   - https://kuaambulu.github.io/SIKEN9/pengumumannikah.html
+   - https://kuaambulu.github.io/SIKEN9/index.html
 
 ---
 
@@ -132,14 +132,14 @@ const WEBAPP_URL = 'YOUR_WEBAPP_URL_HERE';
 
 ### Ganti Nomor WhatsApp
 
-Edit file `pengumumannikah.html` baris 62:
+Edit file `index.html` baris 62:
 ```html
 <a href="https://wa.me/6282146035081" ...>
 ```
 
 ### Update Media Sosial
 
-Edit file `pengumumannikah.html` baris 75-95:
+Edit file `index.html` baris 75-95:
 ```html
 <a href="https://www.instagram.com/kuaambulu/" ...>
 <a href="https://www.facebook.com/share/1MjeCrXmgN/" ...>
