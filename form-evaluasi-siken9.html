@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Evaluasi & Monitoring SIKEN9</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .batik-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px),
+                repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,.1) 10px, rgba(255,255,255,.1) 20px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 3px solid #66bb6a;
+        }
+
+        .header h1 {
+            color: #1b5e20;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #1b5e20;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #66bb6a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .required {
+            color: #e53935;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #c8e6c9;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: #66bb6a;
+            box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-item:hover,
+        .checkbox-item:hover {
+            border-color: #66bb6a;
+            background: #f1f8e9;
+        }
+
+        .radio-item input[type="radio"],
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .rating-scale {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .rating-item:hover {
+            border-color: #66bb6a;
+            background: #f1f8e9;
+        }
+
+        .rating-item input[type="radio"] {
+            margin-bottom: 5px;
+        }
+
+        .rating-item.selected {
+            border-color: #66bb6a;
+            background: #66bb6a;
+            color: white;
+        }
+
+        .likert-scale {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .likert-item {
+            text-align: center;
+            padding: 15px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .likert-item:hover {
+            border-color: #66bb6a;
+            background: #f1f8e9;
+        }
+
+        .likert-item input[type="radio"] {
+            display: block;
+            margin: 0 auto 8px;
+            cursor: pointer;
+        }
+
+        .likert-item.selected {
+            border-color: #66bb6a;
+            background: #66bb6a;
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 187, 106, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 187, 106, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            display: none;
+            background: #f44336;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .likert-scale {
+                grid-template-columns: 1fr;
+            }
+
+            .rating-scale {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="batik-pattern"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📊 Form Evaluasi & Monitoring SIKEN9</h1>
+            <p>Sistem Informasi Kehendak Nikah (N9) Digital - KUA Ambulu</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ Terima kasih! Feedback Anda telah berhasil dikirim.
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            ❌ Terjadi kesalahan. Silakan coba lagi.
+        </div>
+
+        <form id="evaluationForm" class="form-container">
+            <!-- BAGIAN 1: IDENTITAS RESPONDEN -->
+            <div class="section-title">
+                👤 Bagian 1: Identitas Responden
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="nama">
+                    Nama Lengkap <span class="required">*</span>
+                </label>
+                <input type="text" id="nama" name="nama" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="umur">
+                    Umur <span class="required">*</span>
+                </label>
+                <input type="number" id="umur" name="umur" class="form-input" min="17" max="100" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="jenis_kelamin">
+                    Jenis Kelamin <span class="required">*</span>
+                </label>
+                <select id="jenis_kelamin" name="jenis_kelamin" class="form-select" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="pendidikan">
+                    Pendidikan Terakhir <span class="required">*</span>
+                </label>
+                <select id="pendidikan" name="pendidikan" class="form-select" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="SD">SD</option>
+                    <option value="SMP">SMP</option>
+                    <option value="SMA/SMK">SMA/SMK</option>
+                    <option value="D3">D3</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                    <option value="S3">S3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="pekerjaan">
+                    Pekerjaan <span class="required">*</span>
+                </label>
+                <input type="text" id="pekerjaan" name="pekerjaan" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="status_responden">
+                    Status Responden <span class="required">*</span>
+                </label>
+                <select id="status_responden" name="status_responden" class="form-select" required>
+                    <option value="">-- Pilih --</option>
+                    <option value="Calon Pengantin">Calon Pengantin</option>
+                    <option value="Keluarga Calon Pengantin">Keluarga Calon Pengantin</option>
+                    <option value="Masyarakat Umum">Masyarakat Umum</option>
+                    <option value="Petugas KUA">Petugas KUA</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <!-- BAGIAN 2: AKSESIBILITAS -->
+            <div class="section-title">
+                🌐 Bagian 2: Aksesibilitas Website
+            </div>
+
+            <div class="info-box">
+                💡 Bagian ini mengevaluasi kemudahan akses website SIKEN9
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Bagaimana Anda mengetahui website SIKEN9? <span class="required">*</span>
+                </label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Media Sosial KUA">
+                        <span>Media Sosial KUA (Instagram/Facebook/TikTok)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Website KUA">
+                        <span>Website KUA</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Petugas KUA">
+                        <span>Informasi dari Petugas KUA</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Keluarga/Teman">
+                        <span>Keluarga/Teman</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Papan Pengumuman">
+                        <span>Papan Pengumuman Fisik di KUA</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="sumber_info" value="Lainnya">
+                        <span>Lainnya</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Device yang digunakan untuk mengakses SIKEN9? <span class="required">*</span>
+                </label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="device" value="Smartphone" required>
+                        <span>📱 Smartphone</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="device" value="Tablet">
+                        <span>📲 Tablet</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="device" value="Laptop">
+                        <span>💻 Laptop</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="device" value="Desktop">
+                        <span>🖥️ Desktop</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Seberapa mudah menemukan website SIKEN9? <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="kemudahan_akses" value="1" required>
+                        <span>Sangat Sulit</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kemudahan_akses" value="2">
+                        <span>Sulit</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kemudahan_akses" value="3">
+                        <span>Cukup</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kemudahan_akses" value="4">
+                        <span>Mudah</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kemudahan_akses" value="5">
+                        <span>Sangat Mudah</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BAGIAN 3: KEMUDAHAN PENGGUNAAN -->
+            <div class="section-title">
+                ⚙️ Bagian 3: Kemudahan Penggunaan
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Tampilan website SIKEN9 menarik dan mudah dipahami <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="tampilan" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="tampilan" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="tampilan" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="tampilan" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="tampilan" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Fitur pencarian data memudahkan saya menemukan informasi <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="fitur_search" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="fitur_search" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="fitur_search" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="fitur_search" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="fitur_search" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Informasi yang ditampilkan lengkap dan jelas <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="kelengkapan_info" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kelengkapan_info" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kelengkapan_info" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kelengkapan_info" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kelengkapan_info" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Website dapat diakses dengan baik di perangkat saya <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="kompatibilitas" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kompatibilitas" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kompatibilitas" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kompatibilitas" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="kompatibilitas" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BAGIAN 4: MANFAAT -->
+            <div class="section-title">
+                ✨ Bagian 4: Manfaat SIKEN9
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    SIKEN9 memudahkan saya dalam mengakses informasi pengumuman nikah <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_akses" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_akses" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_akses" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_akses" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_akses" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    SIKEN9 lebih praktis dibanding papan pengumuman fisik <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_praktis" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_praktis" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_praktis" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_praktis" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_praktis" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    SIKEN9 meningkatkan transparansi pelayanan KUA <span class="required">*</span>
+                </label>
+                <div class="likert-scale">
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_transparansi" value="1" required>
+                        <span>Sangat Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_transparansi" value="2">
+                        <span>Tidak Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_transparansi" value="3">
+                        <span>Netral</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_transparansi" value="4">
+                        <span>Setuju</span>
+                    </label>
+                    <label class="likert-item">
+                        <input type="radio" name="manfaat_transparansi" value="5">
+                        <span>Sangat Setuju</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BAGIAN 5: KEPUASAN -->
+            <div class="section-title">
+                😊 Bagian 5: Tingkat Kepuasan
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Secara keseluruhan, seberapa puas Anda dengan SIKEN9? <span class="required">*</span>
+                </label>
+                <div class="rating-scale">
+                    <label class="rating-item">
+                        <input type="radio" name="kepuasan_keseluruhan" value="1" required>
+                        <span>⭐</span>
+                        <span style="font-size: 0.8em;">Sangat Tidak Puas</span>
+                    </label>
+                    <label class="rating-item">
+                        <input type="radio" name="kepuasan_keseluruhan" value="2">
+                        <span>⭐⭐</span>
+                        <span style="font-size: 0.8em;">Tidak Puas</span>
+                    </label>
+                    <label class="rating-item">
+                        <input type="radio" name="kepuasan_keseluruhan" value="3">
+                        <span>⭐⭐⭐</span>
+                        <span style="font-size: 0.8em;">Cukup Puas</span>
+                    </label>
+                    <label class="rating-item">
+                        <input type="radio" name="kepuasan_keseluruhan" value="4">
+                        <span>⭐⭐⭐⭐</span>
+                        <span style="font-size: 0.8em;">Puas</span>
+                    </label>
+                    <label class="rating-item">
+                        <input type="radio" name="kepuasan_keseluruhan" value="5">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span style="font-size: 0.8em;">Sangat Puas</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Apakah Anda akan merekomendasikan SIKEN9 kepada orang lain? <span class="required">*</span>
+                </label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="rekomendasi" value="Ya" required>
+                        <span>✅ Ya, pasti</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="rekomendasi" value="Mungkin">
+                        <span>🤔 Mungkin</span>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="rekomendasi" value="Tidak">
+                        <span>❌ Tidak</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- BAGIAN 6: SARAN & MASUKAN -->
+            <div class="section-title">
+                💬 Bagian 6: Saran & Masukan
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="masalah">
+                    Apakah Anda mengalami kendala saat menggunakan SIKEN9?
+                </label>
+                <textarea id="masalah" name="masalah" class="form-textarea" placeholder="Jelaskan kendala yang Anda alami (jika ada)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="saran">
+                    Saran untuk perbaikan SIKEN9
+                </label>
+                <textarea id="saran" name="saran" class="form-textarea" placeholder="Berikan saran Anda untuk perbaikan sistem"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="fitur_tambahan">
+                    Fitur tambahan yang Anda inginkan
+                </label>
+                <textarea id="fitur_tambahan" name="fitur_tambahan" class="form-textarea" placeholder="Fitur apa yang ingin ditambahkan ke SIKEN9?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="komentar_tambahan">
+                    Komentar Tambahan
+                </label>
+                <textarea id="komentar_tambahan" name="komentar_tambahan" class="form-textarea" placeholder="Komentar atau masukan lainnya"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                📤 Kirim Evaluasi
+            </button>
+        </form>
+
+        <div class="form-container" style="text-align: center; padding: 20px;">
+            <p style="color: #666; font-size: 0.9em;">
+                © 2025 KUA Kecamatan Ambulu | Data akan digunakan untuk evaluasi dan perbaikan layanan
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // URL Google Apps Script untuk menerima data form
+        const FORM_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxqzqLgutyDUQoa55HfPwdOnEbgysbjydEHAwTgjfWy0AjpTMIwavF6P0GbLlrhr8NkQg/exec';
+
+        // Handle form submission
+        document.getElementById('evaluationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Mengirim...';
+            
+            // Hide messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Convert FormData to object
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    // Handle multiple values (checkboxes)
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Handle checkboxes for sumber_info
+            const sumberInfoCheckboxes = document.querySelectorAll('input[name="sumber_info"]:checked');
+            data.sumber_info = Array.from(sumberInfoCheckboxes).map(cb => cb.value).join(', ');
+            
+            // Add timestamp
+            data.timestamp = new Date().toISOString();
+            
+            try {
+                // Send data to Google Apps Script
+                const response = await fetch(FORM_WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Reset form
+                this.reset();
+                
+                // Re-enable button after 3 seconds
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '📤 Kirim Evaluasi';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = '❌ Terjadi kesalahan: ' + error.message;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📤 Kirim Evaluasi';
+            }
+        });
+
+        // Add interactive styling for likert items
+        document.querySelectorAll('.likert-item input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove selected class from siblings
+                const parent = this.closest('.likert-scale');
+                parent.querySelectorAll('.likert-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                // Add selected class to parent
+                this.closest('.likert-item').classList.add('selected');
+            });
+        });
+
+        // Add interactive styling for rating items
+        document.querySelectorAll('.rating-item input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remove selected class from siblings
+                const parent = this.closest('.rating-scale');
+                parent.querySelectorAll('.rating-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                // Add selected class to parent
+                this.closest('.rating-item').classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
