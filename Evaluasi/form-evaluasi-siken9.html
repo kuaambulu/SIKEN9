@@ -326,7 +326,15 @@
                 <label class="form-label" for="umur">
                     Umur <span class="required">*</span>
                 </label>
-                <input type="number" id="umur" name="umur" class="form-input" min="17" max="100" required>
+                <!-- PERBAIKAN: Mengubah input umur menjadi dropdown agar konsisten dengan tes -->
+                <select id="umur" name="umur" class="form-select" required>
+                    <option value="">-- Pilih Rentang Umur --</option>
+                    <option value="< 20 Tahun">&lt; 20 Tahun</option>
+                    <option value="20-29 Tahun">20-29 Tahun</option>
+                    <option value="30-39 Tahun">30-39 Tahun</option>
+                    <option value="40-49 Tahun">40-49 Tahun</option>
+                    <option value="> 50 Tahun">&gt; 50 Tahun</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -353,6 +361,7 @@
                     <option value="S1">S1</option>
                     <option value="S2">S2</option>
                     <option value="S3">S3</option>
+                    <option value="Lainnya">Lainnya</option>
                 </select>
             </div>
 
@@ -360,7 +369,7 @@
                 <label class="form-label" for="pekerjaan">
                     Pekerjaan <span class="required">*</span>
                 </label>
-                <input type="text" id="pekerjaan" name="pekerjaan" class="form-input" required>
+                <input type="text" id="pekerjaan" name="pekerjaan" class="form-input" required placeholder="Contoh: PNS, Wiraswasta, Pelajar">
             </div>
 
             <div class="form-group">
@@ -498,17 +507,27 @@
                 </div>
             </div>
 
-            <!-- BAGIAN 6: SARAN & MASUKAN -->
+            <!-- BAGIAN 5: SARAN & MASUKAN -->
             <div class="section-title">
                 💬 Bagian 5: Saran & Masukan
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="masalah">
+                <!-- 
+                  PERBAIKAN: 
+                  - 'for' diubah dari 'masalah' menjadi 'kritik_saran'
+                -->
+                <label class="form-label" for="kritik_saran">
                     Berikan Kritik dan Saran anda?
                 </label>
-                <textarea id="masalah" name="masalah" class="form-textarea" placeholder="Jelaskan kendala yang Anda alami (jika ada)"></textarea>
+                <!-- 
+                  PERBAIKAN: 
+                  - 'id' diubah dari 'masalah' menjadi 'kritik_saran'
+                  - 'name' diubah dari 'masalah' menjadi 'kritik_saran' agar sesuai dengan Apps Script
+                -->
+                <textarea id="kritik_saran" name="kritik_saran" class="form-textarea" placeholder="Tuliskan kritik, saran, atau kendala yang Anda alami (jika ada)..."></textarea>
             </div>
+            
             <button type="submit" class="submit-btn" id="submitBtn">
                 📤 Kirim Evaluasi
             </button>
@@ -522,7 +541,7 @@
     </div>
 
     <script>
-        // URL Google Apps Script untuk menerima data form
+        // URL Google Apps Script Anda
         const FORM_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxqzqLgutyDUQoa55HfPwdOnEbgysbjydEHAwTgjfWy0AjpTMIwavF6P0GbLlrhr8NkQg/exec';
 
         // Handle form submission
@@ -547,42 +566,47 @@
             
             // Convert FormData to object
             for (let [key, value] of formData.entries()) {
-                if (data[key]) {
-                    // Handle multiple values (checkboxes)
-                    if (Array.isArray(data[key])) {
-                        data[key].push(value);
-                    } else {
-                        data[key] = [data[key], value];
-                    }
-                } else {
-                    data[key] = value;
-                }
+                data[key] = value;
             }
             
-            // Handle checkboxes for sumber_info
-            const sumberInfoCheckboxes = document.querySelectorAll('input[name="sumber_info"]:checked');
-            data.sumber_info = Array.from(sumberInfoCheckboxes).map(cb => cb.value).join(', ');
+            // --- PERBAIKAN: Menghapus kode 'sumber_info' yang tidak ada di HTML ---
             
             // Add timestamp
             data.timestamp = new Date().toISOString();
             
             try {
-                // Send data to Google Apps Script
+                // --- PERBAIKAN: Mengubah logika fetch ---
                 const response = await fetch(FORM_WEBAPP_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    // Hapus 'mode: no-cors' agar bisa membaca respons
+                    // Hapus 'Content-Type: application/json'
+                    // Ganti dengan 'Content-Type: text/plain' agar sesuai dengan JSON.parse(e.postData.contents)
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain;charset=utf-8',
                     },
                     body: JSON.stringify(data)
                 });
                 
-                // Show success message
+                // Membaca respons JSON dari Apps Script
+                const result = await response.json();
+
+                if (result.result !== 'success') {
+                    // Jika skrip mengembalikan error, lemparkan error
+                    throw new Error(result.message || 'Terjadi error di server Apps Script.');
+                }
+
+                // --- Akhir Perbaikan ---
+                
+                // Tampilkan pesan sukses HANYA jika pengiriman benar-benar berhasil
                 successMessage.style.display = 'block';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 // Reset form
                 this.reset();
+                // Reset juga highlight pada tombol radio
+                document.querySelectorAll('.likert-item, .rating-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
                 
                 // Re-enable button after 3 seconds
                 setTimeout(() => {
@@ -591,6 +615,7 @@
                 }, 3000);
                 
             } catch (error) {
+                // Tangkap error (baik error jaringan atau error dari Apps Script)
                 console.error('Error:', error);
                 errorMessage.style.display = 'block';
                 errorMessage.textContent = '❌ Terjadi kesalahan: ' + error.message;
@@ -602,31 +627,22 @@
             }
         });
 
-        // Add interactive styling for likert items
-        document.querySelectorAll('.likert-item input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Remove selected class from siblings
-                const parent = this.closest('.likert-scale');
-                parent.querySelectorAll('.likert-item').forEach(item => {
-                    item.classList.remove('selected');
+        // Logika untuk highlight pilihan (sudah benar, tidak perlu diubah)
+        function addSelectionHandler(selector) {
+            document.querySelectorAll(selector).forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const parentGroup = this.closest('.likert-scale, .rating-scale');
+                    parentGroup.querySelectorAll('.likert-item, .rating-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    this.closest('.likert-item, .rating-item').classList.add('selected');
                 });
-                // Add selected class to parent
-                this.closest('.likert-item').classList.add('selected');
             });
-        });
+        }
 
-        // Add interactive styling for rating items
-        document.querySelectorAll('.rating-item input[type="radio"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Remove selected class from siblings
-                const parent = this.closest('.rating-scale');
-                parent.querySelectorAll('.rating-item').forEach(item => {
-                    item.classList.remove('selected');
-                });
-                // Add selected class to parent
-                this.closest('.rating-item').classList.add('selected');
-            });
-        });
+        addSelectionHandler('.likert-item input[type="radio"]');
+        addSelectionHandler('.rating-item input[type="radio"]');
+
     </script>
 </body>
 </html>
