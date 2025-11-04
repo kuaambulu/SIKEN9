@@ -1,10 +1,10 @@
 # 📋 Papan Pengumuman Kehendak Nikah - KUA Ambulu
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/index.html)
-[![Version](https://img.shields.io/badge/Version-2.2-blue)](https://github.com/kuaambulu/SIKEN9)
+[![Version](https://img.shields.io/badge/Version-2.3-blue)](https://github.com/kuaambulu/SIKEN9)
 [![License](https://img.shields.io/badge/License-KUA%20Ambulu-green)](https://github.com/kuaambulu/SIKEN9)
 
-Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 dengan fitur privacy-friendly untuk melindungi data sensitif pengguna.
+Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 dengan sistem privacy-first yang melindungi data sensitif pengguna.
 
 ## 🌐 Live Demo
 
@@ -18,13 +18,14 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 den
 - Real-time search tanpa reload
 - 4 parameter: Nama Laki-Laki, Nama Perempuan, Tanggal, Hari
 - Case-insensitive dan partial match support
+- **TIDAK termasuk nomor pemeriksaan** untuk privasi
 
-### 🔐 Privacy Protection (NEW! v2.2)
-- **Toggle Hide/Show TTL**: Tombol untuk menyembunyikan/menampilkan data Tempat Tanggal Lahir
-- Melindungi data sensitif (TTL Calon Pengantin & Wali Nikah)
-- State persisten menggunakan localStorage
-- Ikon visual yang jelas (👁️ / 👁️‍🗨️)
-- Smooth transition animation
+### 🔐 Smart Privacy Protection (NEW! v2.3)
+- **TTL Default Hidden**: Data Tempat Tanggal Lahir disembunyikan secara default
+- **Auto-Show pada Pencarian Nama Lengkap**: TTL otomatis muncul HANYA saat pencarian exact match nama lengkap
+- **Indicator Visual**: Badge "🔒 TTL Ditampilkan" muncul saat TTL terlihat
+- **Privacy-First Approach**: Melindungi data sensitif (TTL Calon Pengantin & Wali Nikah) kecuali untuk pihak yang berkepentingan
+- **Smooth Animation**: Transisi halus saat TTL muncul/hilang
 
 ### 📄 Pagination Cerdas
 - **Desktop**: 3×1 grid (3 kartu per halaman)
@@ -63,11 +64,11 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 den
 
 ```
 SIKEN9/
-├── index.html          # File HTML utama (v2.2)
+├── index.html          # File HTML utama (v2.3)
 ├── css/
-│   └── style.css       # Stylesheet untuk tampilan
+│   └── style.css       # Stylesheet dengan TTL default hidden
 ├── js/
-│   └── script.js       # JavaScript untuk logic & fitur TTL toggle
+│   └── script.js       # JavaScript dengan smart privacy logic
 ├── asset/
 │   ├── logo.png        # Logo Kemenag
 │   └── Icon.png        # Favicon
@@ -79,8 +80,8 @@ SIKEN9/
 ## 🚀 Teknologi yang Digunakan
 
 - **HTML5** - Struktur website
-- **CSS3** - Styling dan animasi
-- **JavaScript (ES6)** - Logic, interaksi & privacy features
+- **CSS3** - Styling dan animasi dengan privacy-first design
+- **JavaScript (ES6)** - Logic, interaksi & smart privacy features
 - **Google Apps Script** - Backend API
 - **Google Spreadsheet** - Database
 - **Google Analytics** - Tracking & monitoring
@@ -171,9 +172,12 @@ body {
 }
 ```
 
-### Konfigurasi TTL Toggle (NEW!)
+### Konfigurasi Smart Privacy (v2.3)
 
-Fitur TTL toggle menggunakan localStorage untuk menyimpan preferensi user. Tidak perlu konfigurasi tambahan, bekerja otomatis.
+Sistem privacy bekerja otomatis tanpa konfigurasi tambahan:
+- TTL default hidden untuk semua pengunjung
+- TTL auto-show saat pencarian nama lengkap (exact match)
+- Logic ada di `js/script.js` fungsi `shouldShowTTL()`
 
 ---
 
@@ -181,14 +185,20 @@ Fitur TTL toggle menggunakan localStorage untuk menyimpan preferensi user. Tidak
 
 ### Kolom Wajib (29 kolom A-AC):
 
-| Kolom | Field | Contoh |
-|-------|-------|--------|
-| A | Status | TRUE/FALSE |
-| B | Nomor Pemeriksaan |  NPXXXX3509121MMYYYY |
-| C-I | Data Calon Laki-Laki | Nama, Bin, TTL, dll |
-| J-P | Data Calon Perempuan | Nama, Binti, TTL, dll |
-| Q-Z | Data Wali Nikah | Jenis, Nama, dll |
-| AA-AC | Jadwal Nikah | Hari, Tanggal, Tempat |
+| Kolom | Field | Contoh | Format Baru |
+|-------|-------|--------|-------------|
+| A | Status | TRUE/FALSE | - |
+| B | Nomor Pemeriksaan | NPXXXX3509121MMYYYY | **Update format** |
+| C-I | Data Calon Laki-Laki | Nama, Bin, TTL, dll | - |
+| J-P | Data Calon Perempuan | Nama, Binti, TTL, dll | - |
+| Q-Z | Data Wali Nikah | Jenis, Nama, dll | - |
+| AA-AC | Jadwal Nikah | Hari, Tanggal, Tempat | - |
+
+**Format Nomor Pemeriksaan (Kolom B)**:
+- **NPXXXX**: Prefix nomor pemeriksaan (contoh: NP0001, NP0234)
+- **3509121**: Kode wilayah/identifikasi
+- **MMYYYY**: Bulan dan Tahun (contoh: 112024 = November 2024)
+- **Contoh lengkap**: `NP00013509121112024`
 
 Detail lengkap: Lihat dokumentasi di folder `docs/`
 
@@ -202,6 +212,7 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
    - Buka Google Spreadsheet
    - Tambah baris baru
    - Isi semua kolom
+   - **Format Nomor Pemeriksaan**: NPXXXX3509121MMYYYY
    - Set Status = TRUE
 
 2. **Sembunyikan Data**
@@ -214,19 +225,21 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 ### Untuk Masyarakat
 
-1. **Cari Pengumuman**
-   - Ketik nama/nomor di kolom search
+1. **Cari Pengumuman (Tanpa Nomor Pemeriksaan)**
+   - Ketik nama/tanggal di kolom search
    - Hasil muncul real-time
+   - **Privasi**: Nomor pemeriksaan tidak bisa dicari untuk keamanan
 
 2. **Lihat Detail**
    - Scroll card untuk lihat info lengkap
    - Perhatikan countdown badge untuk jadwal
+   - **TTL tersembunyi** secara default
 
-3. **Hide/Show Data TTL (NEW!)**
-   - Klik tombol "Sembunyikan TTL" di atas data
-   - Data TTL akan disembunyikan untuk privasi
-   - Klik "Tampilkan TTL" untuk menampilkan kembali
-   - Preferensi tersimpan otomatis
+3. **Melihat TTL (Smart Privacy)**
+   - **Cara 1**: Ketik **nama lengkap** calon pengantin di search
+   - Sistem akan otomatis menampilkan TTL jika nama exact match
+   - Badge "🔒 TTL Ditampilkan" akan muncul
+   - **Cara 2**: Hanya pihak berkepentingan yang perlu melihat TTL
 
 4. **Lapor Keberatan**
    - Klik tombol WhatsApp di footer
@@ -253,7 +266,8 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 1. Cek URL Web App di `js/script.js`
 2. Test URL di browser (harus return JSON)
 3. Pastikan ada data dengan Status = TRUE
-4. Clear browser cache (Ctrl+Shift+Delete)
+4. Pastikan format Nomor Pemeriksaan: NPXXXX3509121MMYYYY
+5. Clear browser cache (Ctrl+Shift+Delete)
 
 ### CSS Tidak Ter-load
 
@@ -268,14 +282,23 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 1. Pastikan `js/script.js` ter-load
 2. Buka Console (F12) untuk cek error
 3. Pastikan JavaScript enabled di browser
+4. **Ingat**: Nomor pemeriksaan tidak bisa dicari (by design)
 
-### TTL Toggle Tidak Berfungsi
+### TTL Tidak Muncul Saat Search Nama
 
 **Solusi**:
-1. Pastikan browser support localStorage
-2. Cek Console (F12) untuk error
-3. Clear localStorage: `localStorage.clear()` di Console
-4. Refresh halaman
+1. Pastikan ketik **nama lengkap** yang exact match
+2. Nama harus persis sama dengan data di spreadsheet
+3. Cek Console (F12) untuk debug
+4. Coba clear search dan ketik ulang
+5. TTL hanya muncul untuk exact match nama, bukan partial match
+
+### TTL Muncul Padahal Tidak Search
+
+**Solusi**:
+1. Cek fungsi `shouldShowTTL()` di `js/script.js`
+2. Pastikan logic exact match bekerja
+3. Clear cache dan refresh
 
 ---
 
@@ -285,23 +308,34 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 - ✅ Spreadsheet tetap private (hanya petugas yang bisa edit)
 - ✅ Public hanya bisa READ, tidak bisa WRITE
 - ✅ HTTPS secure connection via GitHub Pages
-- ✅ **NEW**: TTL dapat disembunyikan untuk melindungi data sensitif
-- ✅ localStorage untuk preferensi user (tidak dikirim ke server)
+- ✅ **NEW**: TTL default hidden untuk semua pengunjung
+- ✅ **NEW**: TTL hanya muncul saat pencarian nama lengkap exact match
+- ✅ **NEW**: Nomor pemeriksaan tidak dapat dicari (privacy protection)
+- ✅ **NEW**: Indicator visual saat TTL ditampilkan
+- ✅ Privacy-first approach berdasarkan feedback monitoring & evaluasi
 
 ---
 
 ## 📝 Changelog
 
+### Version 2.3 (2025-11-04) - Smart Privacy Update
+- ✅ **FITUR BARU**: TTL default HIDDEN untuk semua pengunjung
+- ✅ **FITUR BARU**: Auto-show TTL hanya saat pencarian nama lengkap (exact match)
+- ✅ **FITUR BARU**: Indicator badge "🔒 TTL Ditampilkan" saat TTL visible
+- ✅ **PRIVASI**: Nomor pemeriksaan dihapus dari parameter pencarian
+- ✅ **UPDATE**: Format nomor pemeriksaan: NPXXXX3509121MMYYYY
+- ✅ Placeholder search & hint text diperbarui
+- ✅ Smooth animation saat TTL muncul/hilang
+- ✅ Logic smart privacy dengan exact name matching
+- ✅ Berdasarkan feedback monitoring & evaluasi pengguna
+- ✅ Print mode: TTL tetap hidden
+- ✅ Responsive di semua device
+
 ### Version 2.2 (2025-11-04) - Privacy Update
-- ✅ **FITUR BARU**: Toggle Hide/Show TTL untuk privasi data
+- ✅ Toggle Hide/Show TTL untuk privasi data
 - ✅ Tombol visual dengan ikon mata (👁️ / 👁️‍🗨️)
 - ✅ State persisten dengan localStorage
 - ✅ Smooth animation saat hide/show
-- ✅ Melindungi data TTL Calon Pengantin Laki-Laki
-- ✅ Melindungi data TTL Calon Pengantin Perempuan
-- ✅ Melindungi data TTL Wali Nikah
-- ✅ Berdasarkan feedback monitoring & evaluasi pengguna
-- ✅ Responsive di semua device
 
 ### Version 2.1 (2025-10-31)
 - ✅ File dipisah menjadi HTML, CSS, JS
@@ -342,7 +376,7 @@ Kontribusi untuk pengembangan sistem ini sangat diterima!
 - Test di berbagai browser dan device
 - Update dokumentasi jika perlu
 - Tambahkan comments untuk kode complex
-- Prioritaskan privacy dan keamanan data
+- **PRIORITAS**: Jaga privasi dan keamanan data pengguna
 
 ---
 
@@ -378,8 +412,8 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 - Google (Sheets, Apps Script, Analytics)
 - GitHub (Hosting)
 - Tim IT KUA Ambulu
-- **Masyarakat Kecamatan Ambulu** atas feedback monitoring & evaluasi
-- Semua pihak yang telah memberikan kritik dan saran konstruktif
+- **Masyarakat Kecamatan Ambulu** atas feedback monitoring & evaluasi yang konstruktif
+- Semua pihak yang telah memberikan kritik dan saran untuk peningkatan privasi
 
 ---
 
@@ -389,7 +423,8 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 - [FAQ](Docs/FAQ.md)
 - [API Documentation](Docs/API_DOCS.md)
 - [Troubleshooting Guide](Docs/TROUBLESHOOTING.md)
-- [Privacy Policy](Docs/PRIVACY.md) - NEW!
+- [Privacy Policy](Docs/PRIVACY.md)
+- [Smart Privacy Feature Guide](Docs/SMART_PRIVACY.md) - NEW!
 
 ---
 
@@ -402,3 +437,5 @@ Jika project ini bermanfaat, berikan ⭐ untuk support pengembangan!
 **Dibuat dengan ❤️ oleh ZR48 untuk KUA Kecamatan Ambulu**
 
 *Mempermudah Pelayanan, Meningkatkan Kepuasan, Melindungi Privasi*
+
+**#PrivacyFirst #DataProtection #DigitalKUA**
