@@ -6,7 +6,6 @@ let allData = [];
 let filteredData = [];
 let currentPage = 1;
 let ttlVisible = true; // State untuk visibility TTL
-const itemsPerPage = 1; // 1 row untuk semua device
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -61,6 +60,54 @@ function getCountdownBadge(tanggalNikah) {
     if (days <= 7) return `<div class="countdown-badge" style="background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%);">⏱️ ${days} Hari Lagi</div>`;
     if (days <= 30) return `<div class="countdown-badge" style="background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);">📅 ${days} Hari Lagi</div>`;
     return `<div class="countdown-badge" style="background: linear-gradient(135deg, #42a5f5 0%, #2196f3 100%);">📆 ${days} Hari Lagi</div>`;
+}
+
+// Load state TTL dari localStorage
+function loadTTLState() {
+    const savedState = localStorage.getItem('ttlVisible');
+    if (savedState !== null) {
+        ttlVisible = savedState === 'true';
+    }
+    updateTTLButton();
+}
+
+// Save state TTL ke localStorage
+function saveTTLState() {
+    localStorage.setItem('ttlVisible', ttlVisible.toString());
+}
+
+// Update tampilan tombol TTL
+function updateTTLButton() {
+    const btnIcon = document.getElementById('ttlBtnIcon');
+    const btnText = document.getElementById('ttlBtnText');
+    
+    if (ttlVisible) {
+        btnIcon.textContent = '👁️';
+        btnText.textContent = 'Sembunyikan TTL';
+    } else {
+        btnIcon.textContent = '👁️‍🗨️';
+        btnText.textContent = 'Tampilkan TTL';
+    }
+}
+
+// Toggle visibility TTL
+function toggleTTL() {
+    ttlVisible = !ttlVisible;
+    saveTTLState();
+    updateTTLButton();
+    applyTTLVisibility();
+}
+
+// Apply visibility ke semua TTL data
+function applyTTLVisibility() {
+    const ttlElements = document.querySelectorAll('.ttl-data');
+    ttlElements.forEach(el => {
+        if (ttlVisible) {
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    });
 }
 
 // Load dan sort data berdasarkan tanggal terdekat
@@ -284,7 +331,7 @@ function changePage(direction) {
     }
 }
 
-// Search function
+// Search function - TANPA nomor pemeriksaan
 function performSearch() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     
@@ -295,7 +342,6 @@ function performSearch() {
             return (
                 item.namaLakiLaki.toLowerCase().includes(searchTerm) ||
                 item.namaPerempuan.toLowerCase().includes(searchTerm) ||
-                item.nomorPemeriksaan.toLowerCase().includes(searchTerm) ||
                 item.tanggalNikah.toLowerCase().includes(searchTerm) ||
                 item.hariNikah.toLowerCase().includes(searchTerm)
             );
@@ -310,6 +356,9 @@ function performSearch() {
 // Event listener untuk search
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
+    
+    // Load TTL state
+    loadTTLState();
     
     // Real-time search saat mengetik
     searchInput.addEventListener('input', function() {
