@@ -5,7 +5,8 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyAWSqtsuL1U50vULFKk
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
-const itemsPerPage = 3; // 1 rows × 3 columns = 9 items per page (desktop)
+let ttlVisible = true; // State untuk visibility TTL
+const itemsPerPage = 1; // 1 row untuk semua device
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -128,8 +129,16 @@ function renderPage() {
         return;
     }
 
-    // Hitung jumlah halaman
-    const itemsPerPageActual = window.innerWidth <= 768 ? 1 : 3; // 1 untuk mobile, 3 untuk desktop
+    // Hitung jumlah halaman berdasarkan device
+    let itemsPerPageActual;
+    if (window.innerWidth <= 768) {
+        itemsPerPageActual = 1; // Mobile: 1 kolom × 1 baris = 1 item
+    } else if (window.innerWidth <= 900) {
+        itemsPerPageActual = 2; // Tablet: 2 kolom × 1 baris = 2 items
+    } else {
+        itemsPerPageActual = 3; // Desktop: 3 kolom × 1 baris = 3 items
+    }
+    
     const totalPages = Math.ceil(filteredData.length / itemsPerPageActual);
     
     // Batasi halaman yang valid
@@ -167,7 +176,7 @@ function renderPage() {
                         <div class="data-label">Bin</div>
                         <div class="data-value">${item.binLakiLaki}</div>
                     </div>
-                    <div class="data-row">
+                    <div class="data-row ttl-data">
                         <div class="data-label">TTL</div>
                         <div class="data-value">${item.ttlLakiLaki}</div>
                     </div>
@@ -187,7 +196,7 @@ function renderPage() {
                         <div class="data-label">Binti</div>
                         <div class="data-value">${item.bintiPerempuan}</div>
                     </div>
-                    <div class="data-row">
+                    <div class="data-row ttl-data">
                         <div class="data-label">TTL</div>
                         <div class="data-value">${item.ttlPerempuan}</div>
                     </div>
@@ -222,7 +231,7 @@ function renderPage() {
                         <div class="data-label">Bin</div>
                         <div class="data-value">${item.binWali}</div>
                     </div>
-                    <div class="data-row">
+                    <div class="data-row ttl-data">
                         <div class="data-label">TTL</div>
                         <div class="data-value">${item.ttlWali}</div>
                     </div>
@@ -245,6 +254,9 @@ function renderPage() {
     
     html += '</div>';
     contentDiv.innerHTML = html;
+    
+    // Apply TTL visibility state
+    applyTTLVisibility();
     
     // Update pagination
     if (totalPages > 1) {
@@ -326,4 +338,3 @@ window.addEventListener('resize', function() {
         renderPage();
     }, 250);
 });
-
