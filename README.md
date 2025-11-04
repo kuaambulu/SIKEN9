@@ -385,25 +385,11 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 
 ## 📚 Dokumentasi Tambahan
 
-- [Panduan Setup Lengkap](docs/SETUP_GUIDE.md)
-- [FAQ](docs/FAQ.md)
-- [API Documentation](docs/API_DOCS.md)
-- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
-- [Privacy Policy](docs/PRIVACY.md) - NEW!
-
----
-
-## 🆕 Update Terbaru
-
-### Fitur Privacy Protection (v2.2)
-Berdasarkan hasil monitoring dan evaluasi melalui form feedback, kami menerima kritik dan saran untuk meningkatkan privasi data pengguna. Update ini menambahkan fitur hide/show TTL yang memungkinkan pengunjung untuk:
-
-1. **Menyembunyikan data sensitif** (TTL) dengan satu klik
-2. **Mengontrol informasi** yang ditampilkan sesuai kebutuhan
-3. **Menjaga privasi** sambil tetap memberikan akses informasi penting
-4. **Preferensi tersimpan** otomatis untuk kunjungan berikutnya
-
-Fitur ini merupakan implementasi langsung dari feedback masyarakat dalam upaya terus meningkatkan kualitas layanan digital KUA Ambulu.
+- [Panduan Setup Lengkap](Docs/SETUP_GUIDE.md)
+- [FAQ](Docs/FAQ.md)
+- [API Documentation](Docs/API_DOCS.md)
+- [Troubleshooting Guide](Docs/TROUBLESHOOTING.md)
+- [Privacy Policy](Docs/PRIVACY.md) - NEW!
 
 ---
 
