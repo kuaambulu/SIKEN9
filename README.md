@@ -16,7 +16,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 den
 
 ### 🔍 Pencarian Canggih
 - Real-time search tanpa reload
-- 5 parameter: Nama Laki-Laki, Nama Perempuan, Nomor Pemeriksaan, Tanggal, Hari
+- 4 parameter: Nama Laki-Laki, Nama Perempuan, Tanggal, Hari
 - Case-insensitive dan partial match support
 
 ### 🔐 Privacy Protection (NEW! v2.2)
