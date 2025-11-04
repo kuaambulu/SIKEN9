@@ -5,7 +5,8 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyAWSqtsuL1U50vULFKk
 let allData = [];
 let filteredData = [];
 let currentPage = 1;
-let ttlVisible = true; // State untuk visibility TTL
+let ttlVisible = false; // Default HIDDEN
+let searchTerm = ''; // Menyimpan search term
 
 // Parse tanggal dari format Indonesia ke Date object
 function parseIndonesianDate(dateStr) {
@@ -62,40 +63,48 @@ function getCountdownBadge(tanggalNikah) {
     return `<div class="countdown-badge" style="background: linear-gradient(135deg, #42a5f5 0%, #2196f3 100%);">📆 ${days} Hari Lagi</div>`;
 }
 
-// Load state TTL dari localStorage
-function loadTTLState() {
-    const savedState = localStorage.getItem('ttlVisible');
-    if (savedState !== null) {
-        ttlVisible = savedState === 'true';
-    }
-    updateTTLButton();
+// Cek apakah search term adalah nama lengkap yang exact match
+function isExactNameMatch(item, searchTerm) {
+    const search = searchTerm.toLowerCase().trim();
+    const namaLaki = item.namaLakiLaki.toLowerCase().trim();
+    const namaPerempuan = item.namaPerempuan.toLowerCase().trim();
+    
+    // Exact match atau minimal 80% kesamaan untuk nama lengkap
+    return search === namaLaki || search === namaPerempuan;
 }
 
-// Save state TTL ke localStorage
-function saveTTLState() {
-    localStorage.setItem('ttlVisible', ttlVisible.toString());
+// Check apakah harus show TTL berdasarkan hasil pencarian
+function shouldShowTTL() {
+    // Jika tidak ada search term, hide TTL
+    if (!searchTerm || searchTerm.trim() === '') {
+        return false;
+    }
+    
+    // Jika ada hasil filtered dan search term adalah nama lengkap
+    if (filteredData.length > 0) {
+        // Cek apakah ada exact match
+        return filteredData.some(item => isExactNameMatch(item, searchTerm));
+    }
+    
+    return false;
 }
 
 // Update tampilan tombol TTL
 function updateTTLButton() {
     const btnIcon = document.getElementById('ttlBtnIcon');
     const btnText = document.getElementById('ttlBtnText');
+    const toggleBtn = document.getElementById('toggleTTLBtn');
     
+    // Show/hide button based on TTL visibility
     if (ttlVisible) {
-        btnIcon.textContent = '👁️';
-        btnText.textContent = 'Sembunyikan TTL';
+        toggleBtn.style.display = 'flex';
+        btnIcon.textContent = '🔒';
+        btnText.textContent = 'TTL Ditampilkan';
+        toggleBtn.style.background = 'rgba(76, 175, 80, 0.3)';
+        toggleBtn.style.borderColor = 'rgba(76, 175, 80, 0.6)';
     } else {
-        btnIcon.textContent = '👁️‍🗨️';
-        btnText.textContent = 'Tampilkan TTL';
+        toggleBtn.style.display = 'none';
     }
-}
-
-// Toggle visibility TTL
-function toggleTTL() {
-    ttlVisible = !ttlVisible;
-    saveTTLState();
-    updateTTLButton();
-    applyTTLVisibility();
 }
 
 // Apply visibility ke semua TTL data
@@ -305,6 +314,9 @@ function renderPage() {
     // Apply TTL visibility state
     applyTTLVisibility();
     
+    // Update TTL button
+    updateTTLButton();
+    
     // Update pagination
     if (totalPages > 1) {
         paginationDiv.style.display = 'flex';
@@ -331,21 +343,26 @@ function changePage(direction) {
     }
 }
 
-// Search function - TANPA nomor pemeriksaan
+// Search function - dengan logic TTL visibility
 function performSearch() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    searchTerm = document.getElementById('searchInput').value;
+    const search = searchTerm.toLowerCase().trim();
     
-    if (searchTerm === '') {
+    if (search === '') {
         filteredData = [...allData];
+        ttlVisible = false; // Reset TTL saat clear search
     } else {
         filteredData = allData.filter(item => {
             return (
-                item.namaLakiLaki.toLowerCase().includes(searchTerm) ||
-                item.namaPerempuan.toLowerCase().includes(searchTerm) ||
-                item.tanggalNikah.toLowerCase().includes(searchTerm) ||
-                item.hariNikah.toLowerCase().includes(searchTerm)
+                item.namaLakiLaki.toLowerCase().includes(search) ||
+                item.namaPerempuan.toLowerCase().includes(search) ||
+                item.tanggalNikah.toLowerCase().includes(search) ||
+                item.hariNikah.toLowerCase().includes(search)
             );
         });
+        
+        // Auto-show TTL jika search adalah nama lengkap (exact match)
+        ttlVisible = shouldShowTTL();
     }
     
     updateStats();
@@ -356,9 +373,6 @@ function performSearch() {
 // Event listener untuk search
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
-    
-    // Load TTL state
-    loadTTLState();
     
     // Real-time search saat mengetik
     searchInput.addEventListener('input', function() {
