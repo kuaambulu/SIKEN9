@@ -438,18 +438,33 @@ body {
     margin-bottom: 30px;
 }
 
-.whatsapp-btn {
+.contact-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.whatsapp-btn,
+.evaluation-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: #25D366;
     color: white;
     padding: 15px 30px;
     border-radius: 50px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.05em;
     transition: all 0.3s ease;
+    flex: 1;
+    min-width: 250px;
+    justify-content: center;
+}
+
+.whatsapp-btn {
+    background: #25D366;
     box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
 }
 
@@ -461,6 +476,22 @@ body {
 
 .whatsapp-btn::before {
     content: '📱';
+    font-size: 1.4em;
+}
+
+.evaluation-btn {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+}
+
+.evaluation-btn:hover {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+}
+
+.evaluation-btn::before {
+    content: '📝';
     font-size: 1.4em;
 }
 
@@ -634,6 +665,16 @@ body {
     .toggle-ttl-btn {
         width: 100%;
         justify-content: center;
+    }
+    
+    .contact-buttons {
+        flex-direction: column;
+    }
+    
+    .whatsapp-btn,
+    .evaluation-btn {
+        width: 100%;
+        min-width: auto;
     }
 
     .pagination {
