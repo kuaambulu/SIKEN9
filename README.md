@@ -1,8 +1,6 @@
-# SIKEN9
-Sistem Infomasi pengumuman Kehendak Nikah (N9) 
 # 📋 Papan Pengumuman Kehendak Nikah - KUA Ambulu
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/pengumumannikah.html)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/index.html)
 [![Version](https://img.shields.io/badge/Version-2.1-blue)](https://github.com/kuaambulu/SIKEN9)
 [![License](https://img.shields.io/badge/License-KUA%20Ambulu-green)](https://github.com/kuaambulu/SIKEN9)
 
@@ -22,7 +20,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 - Case-insensitive dan partial match support
 
 ### 📄 Pagination Cerdas
-- **Desktop**: 1×3 grid (3 kartu per halaman)
+- **Desktop**: 3×1 grid (3 kartu per halaman)
 - **Mobile**: 1×1 grid (1 kartu per halaman)
 - Auto-adjust responsive
 
@@ -57,7 +55,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ```
 SIKEN9/
-├── index.html               # File HTML utama
+├── pengumumannikah.html    # File HTML utama
 ├── style.css                # Stylesheet untuk tampilan
 ├── script.js                # JavaScript untuk logic
 └── README.md                # Dokumentasi ini
@@ -132,14 +130,14 @@ const WEBAPP_URL = 'YOUR_WEBAPP_URL_HERE';
 
 ### Ganti Nomor WhatsApp
 
-Edit file `index.html` baris 62:
+Edit file `pengumumannikah.html` baris 62:
 ```html
 <a href="https://wa.me/6282146035081" ...>
 ```
 
 ### Update Media Sosial
 
-Edit file `index.html` baris 75-95:
+Edit file `pengumumannikah.html` baris 75-95:
 ```html
 <a href="https://www.instagram.com/kuaambulu/" ...>
 <a href="https://www.facebook.com/share/1MjeCrXmgN/" ...>
@@ -212,10 +210,10 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 | Device | Width | Grid | Items/Page |
 |--------|-------|------|------------|
-| Desktop Large | >1200px | 4 columns | 16 |
-| Desktop | 900-1200px | 3 columns | 12 |
-| Tablet | 768-900px | 2 columns | 8 |
-| Mobile | <768px | 1 column | 4 |
+| Desktop Large | >1200px | 3 columns | 3 |
+| Desktop | 900-1200px | 3 columns | 3 |
+| Tablet | 768-900px | 2 columns | 2 |
+| Mobile | <768px | 1 column | 1 |
 
 ---
 
@@ -256,13 +254,13 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 ## 📝 Changelog
 
-### Version 2.1 (2025-10-30)
+### Version 2.1 (2025-10-31)
 - ✅ File dipisah menjadi HTML, CSS, JS
 - ✅ Footer lengkap dengan info KUA Ambulu
 - ✅ Social media links (Instagram, Facebook, TikTok)
 - ✅ Developer credit
 
-### Version 2.0 (2025-10-28)
+### Version 2.0 (2025-10-29)
 - ✅ Fitur pencarian real-time
 - ✅ Pagination 4×4 desktop, 1×4 mobile
 - ✅ Sorting berdasarkan tanggal terdekat
@@ -270,7 +268,7 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 - ✅ Tema hijau modern
 - ✅ Stats bar
 
-### Version 1.0 (2025-10-27)
+### Version 1.0 (2024-10-27)
 - ✅ Basic display pengumuman
 - ✅ Tema biru
 - ✅ Tanpa pagination
@@ -317,7 +315,7 @@ Kontribusi untuk pengembangan sistem ini sangat diterima!
 
 ## 📄 License
 
-Copyright ©2025 Kantor Urusan Agama Kecamatan Ambulu, Kabupaten Jember
+Copyright © 2025 Kantor Urusan Agama Kecamatan Ambulu, Kabupaten Jember
 
 Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai dengan PMA No. 30 Tahun 2024 tentang Pengumuman Kehendak Nikah.
 
