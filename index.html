@@ -34,12 +34,12 @@
                     type="text" 
                     id="searchInput" 
                     class="search-input" 
-                    placeholder="Cari berdasarkan nama calon pengantin, nomor pemeriksaan, atau tanggal akad..."
+                    placeholder="Cari berdasarkan nama calon pengantin atau tanggal akad..."
                 >
                 <span class="search-icon">🔍</span>
             </div>
             <div class="search-hint">
-                💡 Tips: Ketik nama lengkap atau sebagian, nomor pemeriksaan (contoh: NPXXXX3509121XXXXXX), atau tanggal (contoh: 15 Desember)
+                💡 Tips: Ketik nama lengkap atau sebagian, atau tanggal (contoh: 15 Desember)
             </div>
         </div>
 
@@ -49,6 +49,12 @@
             </div>
             <div class="stats-item">
                 <span>Ditampilkan: <span id="displayedData">0</span></span>
+            </div>
+            <div class="stats-item">
+                <button id="toggleTTLBtn" class="toggle-ttl-btn" onclick="toggleTTL()">
+                    <span id="ttlBtnIcon">👁️</span>
+                    <span id="ttlBtnText">Sembunyikan TTL</span>
+                </button>
             </div>
         </div>
 
@@ -66,7 +72,6 @@
             </div>
             <button id="nextBtn" onclick="changePage(1)">Selanjutnya →</button>
         </div>
-
         <div class="footer-contact">
             <h3 style="color: #1b5e20; margin-bottom: 15px;">Ada Keberatan atau Pengaduan?</h3>
             <p style="color: #666; margin-bottom: 20px;">Hubungi kami melalui WhatsApp</p>
@@ -121,6 +126,7 @@
 </body>
 
 </html>
+
 
 
 
