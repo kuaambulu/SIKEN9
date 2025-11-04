@@ -1,10 +1,10 @@
 # 📋 Papan Pengumuman Kehendak Nikah - KUA Ambulu
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-success)](https://kuaambulu.github.io/SIKEN9/index.html)
-[![Version](https://img.shields.io/badge/Version-2.1-blue)](https://github.com/kuaambulu/SIKEN9)
+[![Version](https://img.shields.io/badge/Version-2.2-blue)](https://github.com/kuaambulu/SIKEN9)
 [![License](https://img.shields.io/badge/License-KUA%20Ambulu-green)](https://github.com/kuaambulu/SIKEN9)
 
-Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
+Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024 dengan fitur privacy-friendly untuk melindungi data sensitif pengguna.
 
 ## 🌐 Live Demo
 
@@ -19,8 +19,16 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 - 5 parameter: Nama Laki-Laki, Nama Perempuan, Nomor Pemeriksaan, Tanggal, Hari
 - Case-insensitive dan partial match support
 
+### 🔐 Privacy Protection (NEW! v2.2)
+- **Toggle Hide/Show TTL**: Tombol untuk menyembunyikan/menampilkan data Tempat Tanggal Lahir
+- Melindungi data sensitif (TTL Calon Pengantin & Wali Nikah)
+- State persisten menggunakan localStorage
+- Ikon visual yang jelas (👁️ / 👁️‍🗨️)
+- Smooth transition animation
+
 ### 📄 Pagination Cerdas
 - **Desktop**: 3×1 grid (3 kartu per halaman)
+- **Tablet**: 2×1 grid (2 kartu per halaman)
 - **Mobile**: 1×1 grid (1 kartu per halaman)
 - Auto-adjust responsive
 
@@ -33,7 +41,7 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 - 6 kategori waktu dengan warna berbeda:
   - 🔴 Hari Ini
   - 🟠 Besok
-  - 🟠 2-7 Hari Lagi
+  - 🟡 2-7 Hari Lagi
   - 🟢 8-30 Hari Lagi
   - 🔵 31+ Hari Lagi
   - ⚪ Sudah Dilaksanakan
@@ -55,10 +63,15 @@ Website digital untuk pengumuman kehendak nikah sesuai PMA No. 30 Tahun 2024
 
 ```
 SIKEN9/
-├── pengumumannikah.html    # File HTML utama
-├── style.css                # Stylesheet untuk tampilan
-├── script.js                # JavaScript untuk logic
-└── README.md                # Dokumentasi ini
+├── index.html          # File HTML utama (v2.2)
+├── css/
+│   └── style.css       # Stylesheet untuk tampilan
+├── js/
+│   └── script.js       # JavaScript untuk logic & fitur TTL toggle
+├── asset/
+│   ├── logo.png        # Logo Kemenag
+│   └── Icon.png        # Favicon
+└── README.md           # Dokumentasi ini
 ```
 
 ---
@@ -67,9 +80,10 @@ SIKEN9/
 
 - **HTML5** - Struktur website
 - **CSS3** - Styling dan animasi
-- **JavaScript (ES6)** - Logic dan interaksi
+- **JavaScript (ES6)** - Logic, interaksi & privacy features
 - **Google Apps Script** - Backend API
 - **Google Spreadsheet** - Database
+- **Google Analytics** - Tracking & monitoring
 - **GitHub Pages** - Hosting
 
 ---
@@ -102,20 +116,24 @@ SIKEN9/
    - Copy URL Web App
 
 4. **Konfigurasi JavaScript**
-   - Edit `script.js`
+   - Edit `js/script.js`
    - Ganti `WEBAPP_URL` dengan URL dari langkah 3
    ```javascript
    const WEBAPP_URL = 'https://script.google.com/macros/s/YOUR_ID/exec';
    ```
 
-5. **Deploy ke GitHub Pages**
+5. **Setup Google Analytics (Opsional)**
+   - Edit `index.html` baris 3-12
+   - Ganti `G-C5WPG6Z79G` dengan ID Analytics Anda
+
+6. **Deploy ke GitHub Pages**
    - Push file ke repository
    - Settings → Pages
    - Source: main branch
    - Simpan
 
-6. **Akses Website**
-   - https://kuaambulu.github.io/SIKEN9/index.html
+7. **Akses Website**
+   - https://[username].github.io/SIKEN9/index.html
 
 ---
 
@@ -123,21 +141,21 @@ SIKEN9/
 
 ### Update URL Web App
 
-Edit file `script.js` baris 2:
+Edit file `js/script.js` baris 2:
 ```javascript
 const WEBAPP_URL = 'YOUR_WEBAPP_URL_HERE';
 ```
 
 ### Ganti Nomor WhatsApp
 
-Edit file `pengumumannikah.html` baris 62:
+Edit file `index.html` (bagian footer contact):
 ```html
 <a href="https://wa.me/6282146035081" ...>
 ```
 
 ### Update Media Sosial
 
-Edit file `pengumumannikah.html` baris 75-95:
+Edit file `index.html` (bagian footer social):
 ```html
 <a href="https://www.instagram.com/kuaambulu/" ...>
 <a href="https://www.facebook.com/share/1MjeCrXmgN/" ...>
@@ -146,12 +164,16 @@ Edit file `pengumumannikah.html` baris 75-95:
 
 ### Ubah Tema Warna
 
-Edit file `style.css` baris 9-10:
+Edit file `css/style.css` baris 9-10:
 ```css
 body {
     background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #43a047 100%);
 }
 ```
+
+### Konfigurasi TTL Toggle (NEW!)
+
+Fitur TTL toggle menggunakan localStorage untuk menyimpan preferensi user. Tidak perlu konfigurasi tambahan, bekerja otomatis.
 
 ---
 
@@ -162,7 +184,7 @@ body {
 | Kolom | Field | Contoh |
 |-------|-------|--------|
 | A | Status | TRUE/FALSE |
-| B | Nomor Pemeriksaan | 001/N/2024 |
+| B | Nomor Pemeriksaan |  NPXXXX3509121MMYYYY |
 | C-I | Data Calon Laki-Laki | Nama, Bin, TTL, dll |
 | J-P | Data Calon Perempuan | Nama, Binti, TTL, dll |
 | Q-Z | Data Wali Nikah | Jenis, Nama, dll |
@@ -197,11 +219,17 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
    - Hasil muncul real-time
 
 2. **Lihat Detail**
-   - Klik card untuk lihat info lengkap
+   - Scroll card untuk lihat info lengkap
    - Perhatikan countdown badge untuk jadwal
 
-3. **Lapor Keberatan**
-   - Klik tombol WhatsApp di bawah
+3. **Hide/Show Data TTL (NEW!)**
+   - Klik tombol "Sembunyikan TTL" di atas data
+   - Data TTL akan disembunyikan untuk privasi
+   - Klik "Tampilkan TTL" untuk menampilkan kembali
+   - Preferensi tersimpan otomatis
+
+4. **Lapor Keberatan**
+   - Klik tombol WhatsApp di footer
    - Hubungi petugas KUA
 
 ---
@@ -217,12 +245,12 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 
 ---
 
-## 🐛 Troubleshooting
+## 🛠 Troubleshooting
 
 ### Website Tidak Muncul Data
 
 **Solusi**:
-1. Cek URL Web App di `script.js`
+1. Cek URL Web App di `js/script.js`
 2. Test URL di browser (harus return JSON)
 3. Pastikan ada data dengan Status = TRUE
 4. Clear browser cache (Ctrl+Shift+Delete)
@@ -230,45 +258,67 @@ Detail lengkap: Lihat dokumentasi di folder `docs/`
 ### CSS Tidak Ter-load
 
 **Solusi**:
-1. Pastikan `style.css` di folder yang sama dengan HTML
-2. Cek link di HTML: `<link rel="stylesheet" href="style.css">`
+1. Pastikan struktur folder: `css/style.css`
+2. Cek link di HTML: `<link rel="stylesheet" href="css/style.css">`
 3. Hard refresh: Ctrl+F5
 
 ### Search Tidak Berfungsi
 
 **Solusi**:
-1. Pastikan `script.js` ter-load
+1. Pastikan `js/script.js` ter-load
 2. Buka Console (F12) untuk cek error
 3. Pastikan JavaScript enabled di browser
 
+### TTL Toggle Tidak Berfungsi
+
+**Solusi**:
+1. Pastikan browser support localStorage
+2. Cek Console (F12) untuk error
+3. Clear localStorage: `localStorage.clear()` di Console
+4. Refresh halaman
+
 ---
 
-## 🔐 Keamanan & Privasi
+## 🔒 Keamanan & Privasi
 
 - ✅ Data dengan Status = FALSE tidak akan terexpose
 - ✅ Spreadsheet tetap private (hanya petugas yang bisa edit)
 - ✅ Public hanya bisa READ, tidak bisa WRITE
 - ✅ HTTPS secure connection via GitHub Pages
+- ✅ **NEW**: TTL dapat disembunyikan untuk melindungi data sensitif
+- ✅ localStorage untuk preferensi user (tidak dikirim ke server)
 
 ---
 
 ## 📝 Changelog
+
+### Version 2.2 (2025-11-04) - Privacy Update
+- ✅ **FITUR BARU**: Toggle Hide/Show TTL untuk privasi data
+- ✅ Tombol visual dengan ikon mata (👁️ / 👁️‍🗨️)
+- ✅ State persisten dengan localStorage
+- ✅ Smooth animation saat hide/show
+- ✅ Melindungi data TTL Calon Pengantin Laki-Laki
+- ✅ Melindungi data TTL Calon Pengantin Perempuan
+- ✅ Melindungi data TTL Wali Nikah
+- ✅ Berdasarkan feedback monitoring & evaluasi pengguna
+- ✅ Responsive di semua device
 
 ### Version 2.1 (2025-10-31)
 - ✅ File dipisah menjadi HTML, CSS, JS
 - ✅ Footer lengkap dengan info KUA Ambulu
 - ✅ Social media links (Instagram, Facebook, TikTok)
 - ✅ Developer credit
+- ✅ Google Analytics integration
 
 ### Version 2.0 (2025-10-29)
 - ✅ Fitur pencarian real-time
-- ✅ Pagination 4×4 desktop, 1×4 mobile
+- ✅ Pagination responsive
 - ✅ Sorting berdasarkan tanggal terdekat
 - ✅ Countdown badge dinamis
 - ✅ Tema hijau modern
 - ✅ Stats bar
 
-### Version 1.0 (2024-10-27)
+### Version 1.0 (2025-10-27)
 - ✅ Basic display pengumuman
 - ✅ Tema biru
 - ✅ Tanpa pagination
@@ -292,6 +342,7 @@ Kontribusi untuk pengembangan sistem ini sangat diterima!
 - Test di berbagai browser dan device
 - Update dokumentasi jika perlu
 - Tambahkan comments untuk kode complex
+- Prioritaskan privacy dan keamanan data
 
 ---
 
@@ -317,17 +368,18 @@ Kontribusi untuk pengembangan sistem ini sangat diterima!
 
 Copyright © 2025 Kantor Urusan Agama Kecamatan Ambulu, Kabupaten Jember
 
-Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai dengan PMA No. 30 Tahun 2024 tentang Pengumuman Kehendak Nikah.
+Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai dengan PMA No. 30 Tahun 2024 tentang Pengumuman Kehendak Nikah dengan mengedepankan privasi dan keamanan data masyarakat.
 
 ---
 
 ## 🙏 Acknowledgments
 
 - Kementerian Agama RI
-- Google (Sheets, Apps Script)
+- Google (Sheets, Apps Script, Analytics)
 - GitHub (Hosting)
 - Tim IT KUA Ambulu
-- Masyarakat Kecamatan Ambulu
+- **Masyarakat Kecamatan Ambulu** atas feedback monitoring & evaluasi
+- Semua pihak yang telah memberikan kritik dan saran konstruktif
 
 ---
 
@@ -337,6 +389,21 @@ Website ini dibuat untuk keperluan pelayanan publik KUA Kecamatan Ambulu sesuai 
 - [FAQ](docs/FAQ.md)
 - [API Documentation](docs/API_DOCS.md)
 - [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+- [Privacy Policy](docs/PRIVACY.md) - NEW!
+
+---
+
+## 🆕 Update Terbaru
+
+### Fitur Privacy Protection (v2.2)
+Berdasarkan hasil monitoring dan evaluasi melalui form feedback, kami menerima kritik dan saran untuk meningkatkan privasi data pengguna. Update ini menambahkan fitur hide/show TTL yang memungkinkan pengunjung untuk:
+
+1. **Menyembunyikan data sensitif** (TTL) dengan satu klik
+2. **Mengontrol informasi** yang ditampilkan sesuai kebutuhan
+3. **Menjaga privasi** sambil tetap memberikan akses informasi penting
+4. **Preferensi tersimpan** otomatis untuk kunjungan berikutnya
+
+Fitur ini merupakan implementasi langsung dari feedback masyarakat dalam upaya terus meningkatkan kualitas layanan digital KUA Ambulu.
 
 ---
 
@@ -348,4 +415,4 @@ Jika project ini bermanfaat, berikan ⭐ untuk support pengembangan!
 
 **Dibuat dengan ❤️ oleh ZR48 untuk KUA Kecamatan Ambulu**
 
-*Mempermudah Pelayanan, Meningkatkan Kepuasan*
+*Mempermudah Pelayanan, Meningkatkan Kepuasan, Melindungi Privasi*
