@@ -442,14 +442,14 @@ body {
     display: flex;
     gap: 15px;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     flex-wrap: wrap;
 }
 
-.whatsapp-btn,
-.evaluation-btn {
-    display: inline-flex;
+.contact-btn {
+    display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     color: white;
     padding: 15px 30px;
@@ -459,40 +459,49 @@ body {
     font-size: 1.05em;
     transition: all 0.3s ease;
     flex: 1;
-    min-width: 250px;
-    justify-content: center;
+    min-width: 280px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.contact-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.contact-btn:active {
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+}
+
+.btn-icon-img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.btn-text {
+    display: inline-block;
 }
 
 .whatsapp-btn {
-    background: #25D366;
-    box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
 }
 
 .whatsapp-btn:hover {
-    background: #128C7E;
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-}
-
-.whatsapp-btn::before {
-    content: '📱';
-    font-size: 1.4em;
+    background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
 }
 
 .evaluation-btn {
     background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
-    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
 }
 
 .evaluation-btn:hover {
     background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
-}
-
-.evaluation-btn::before {
-    content: '📝';
-    font-size: 1.4em;
 }
 
 /* Footer Styles */
@@ -671,8 +680,7 @@ body {
         flex-direction: column;
     }
     
-    .whatsapp-btn,
-    .evaluation-btn {
+    .contact-btn {
         width: 100%;
         min-width: auto;
     }
