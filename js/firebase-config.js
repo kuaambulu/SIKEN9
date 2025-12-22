@@ -29,13 +29,13 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth
 
 // TODO: Ganti dengan Firebase Config Anda
 const firebaseConfig = {
-  apiKey: "AIzaSyD9-2283yESq7s5gcjomOzIPCFY7F1CWt4",
-  authDomain: "siken9-402ff.firebaseapp.com",
-  projectId: "siken9-402ff",
-  storageBucket: "siken9-402ff.firebasestorage.app",
-  messagingSenderId: "196080912502",
-  appId: "1:196080912502:web:838c9862e21d994c4ef757",
-  measurementId: "G-HTL1FL69CZ"
+  "apiKey": "AIzaSyD9-2283yESq7s5gcjomOzIPCFY7F1CWt4",
+  "authDomain": "siken9-402ff.firebaseapp.com",
+  "projectId": "siken9-402ff",
+  "storageBucket": "siken9-402ff.firebasestorage.app",
+  "messagingSenderId": "196080912502",
+  "appId": "1:196080912502:web:838c9862e21d994c4ef757",
+  "measurementId": "G-HTL1FL69CZ"
 };
 
 // Initialize Firebase
