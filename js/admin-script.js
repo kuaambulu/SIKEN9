@@ -1,6 +1,5 @@
 // ============================================
-// SIKEN9 Admin Panel Script
-// dengan Filter Status & Arsip
+// SIKEN9 Admin Panel - DEBUG Version
 // ============================================
 
 import { db, auth } from './firebase-config.js';
@@ -18,12 +17,15 @@ import {
     onAuthStateChanged 
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
+console.log('🔵 Admin script loaded');
+console.log('🔵 Auth object:', auth);
+console.log('🔵 DB object:', db);
+
 let currentEditId = null;
 let unsubscribe = null;
 let allDataAdmin = [];
-let currentFilter = 'aktif'; // aktif | arsip | semua
+let currentFilter = 'aktif';
 
-// Parse Indonesian date
 function parseIndonesianDate(dateStr) {
     if (!dateStr) return null;
     const monthMap = {
@@ -45,7 +47,6 @@ function parseIndonesianDate(dateStr) {
     return null;
 }
 
-// Cek apakah acara sudah selesai
 function isEventFinished(tanggalNikah) {
     const weddingDate = parseIndonesianDate(tanggalNikah);
     if (!weddingDate) return false;
@@ -57,7 +58,6 @@ function isEventFinished(tanggalNikah) {
     return weddingDate < today;
 }
 
-// Get status otomatis
 function getAutoStatus(tanggalNikah) {
     const weddingDate = parseIndonesianDate(tanggalNikah);
     if (!weddingDate) return 'Unknown';
@@ -72,21 +72,27 @@ function getAutoStatus(tanggalNikah) {
 }
 
 // Check auth state
+console.log('🔵 Setting up auth listener...');
 onAuthStateChanged(auth, (user) => {
+    console.log('🔵 Auth state changed:', user);
     if (user) {
+        console.log('✅ User logged in:', user.email);
         showDashboard();
         loadData();
     } else {
+        console.log('❌ No user logged in');
         showLogin();
     }
 });
 
 function showLogin() {
+    console.log('🔵 Showing login screen');
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('adminDashboard').classList.remove('show');
 }
 
 function showDashboard() {
+    console.log('🔵 Showing dashboard');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminDashboard').classList.add('show');
 }
@@ -99,13 +105,45 @@ window.handleLogin = async function(e) {
     const password = document.getElementById('loginPassword').value;
     const errorDiv = document.getElementById('loginError');
     
+    console.log('🔵 Attempting login with email:', email);
+    
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        console.log('🔵 Calling signInWithEmailAndPassword...');
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('✅ Login successful!', userCredential.user);
         errorDiv.classList.remove('show');
     } catch (error) {
-        errorDiv.textContent = '❌ Email atau password salah!';
+        console.error('❌ Login error:', error);
+        console.error('❌ Error code:', error.code);
+        console.error('❌ Error message:', error.message);
+        
+        let errorMessage = '❌ Login gagal! ';
+        
+        switch(error.code) {
+            case 'auth/invalid-email':
+                errorMessage += 'Format email tidak valid.';
+                break;
+            case 'auth/user-not-found':
+                errorMessage += 'User tidak ditemukan. Pastikan sudah dibuat di Firebase Authentication.';
+                break;
+            case 'auth/wrong-password':
+                errorMessage += 'Password salah!';
+                break;
+            case 'auth/invalid-credential':
+                errorMessage += 'Email atau password salah!';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage += 'Terlalu banyak percobaan. Tunggu sebentar.';
+                break;
+            default:
+                errorMessage += error.message;
+        }
+        
+        errorDiv.innerHTML = `
+            <strong>${errorMessage}</strong><br>
+            <small style="display: block; margin-top: 5px;">Error code: ${error.code}</small>
+        `;
         errorDiv.classList.add('show');
-        console.error('Login error:', error);
     }
 };
 
@@ -115,51 +153,66 @@ window.handleLogout = async function() {
         try {
             await signOut(auth);
             if (unsubscribe) unsubscribe();
+            console.log('✅ Logged out successfully');
         } catch (error) {
-            console.error('Logout error:', error);
+            console.error('❌ Logout error:', error);
         }
     }
 };
 
-// Load data with real-time listener - SEMUA DATA (termasuk arsip)
+// Load data
 function loadData() {
+    console.log('🔵 loadData() called');
+    
     const q = collection(db, 'announcements');
     
-    unsubscribe = onSnapshot(q, (snapshot) => {
-        allDataAdmin = [];
-        snapshot.forEach((doc) => {
-            allDataAdmin.push({
-                id: doc.id,
-                ...doc.data()
+    console.log('🔵 Setting up Firestore listener...');
+    
+    unsubscribe = onSnapshot(q, 
+        (snapshot) => {
+            console.log('✅ Snapshot received!');
+            console.log('📊 Snapshot size:', snapshot.size);
+            
+            allDataAdmin = [];
+            snapshot.forEach((doc) => {
+                allDataAdmin.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
             });
-        });
-        
-        // Sort by tanggal nikah (terbaru dulu untuk admin)
-        allDataAdmin.sort((a, b) => {
-            const dateA = parseIndonesianDate(a.tanggalNikah);
-            const dateB = parseIndonesianDate(b.tanggalNikah);
-            if (!dateA && !dateB) return 0;
-            if (!dateA) return 1;
-            if (!dateB) return -1;
-            return dateB - dateA; // Descending (terbaru dulu)
-        });
-        
-        renderTable();
-        updateStats();
-    });
+            
+            console.log('📊 Total data loaded:', allDataAdmin.length);
+            
+            allDataAdmin.sort((a, b) => {
+                const dateA = parseIndonesianDate(a.tanggalNikah);
+                const dateB = parseIndonesianDate(b.tanggalNikah);
+                if (!dateA && !dateB) return 0;
+                if (!dateA) return 1;
+                if (!dateB) return -1;
+                return dateB - dateA;
+            });
+            
+            renderTable();
+            updateStats();
+        },
+        (error) => {
+            console.error('❌ Firestore listener error:', error);
+            alert('Error loading data: ' + error.message);
+        }
+    );
 }
 
-// Update stats
 function updateStats() {
     const aktif = allDataAdmin.filter(item => !isEventFinished(item.tanggalNikah)).length;
     const arsip = allDataAdmin.filter(item => isEventFinished(item.tanggalNikah)).length;
+    
+    console.log('📊 Stats - Aktif:', aktif, 'Arsip:', arsip, 'Total:', allDataAdmin.length);
     
     document.getElementById('statsAktif').textContent = aktif;
     document.getElementById('statsArsip').textContent = arsip;
     document.getElementById('statsTotal').textContent = allDataAdmin.length;
 }
 
-// Filter data berdasarkan status
 function getFilteredData() {
     if (currentFilter === 'aktif') {
         return allDataAdmin.filter(item => !isEventFinished(item.tanggalNikah));
@@ -170,11 +223,10 @@ function getFilteredData() {
     }
 }
 
-// Change filter
 window.changeFilter = function(filter) {
+    console.log('🔵 Filter changed to:', filter);
     currentFilter = filter;
     
-    // Update button styles
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
     });
@@ -183,13 +235,14 @@ window.changeFilter = function(filter) {
     renderTable();
 };
 
-// Render table
 function renderTable() {
     const tbody = document.getElementById('tableBody');
     const data = getFilteredData();
     
+    console.log('🔵 Rendering table with', data.length, 'items');
+    
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Tidak ada data</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Tidak ada data untuk filter ini</td></tr>';
         return;
     }
     
@@ -224,16 +277,15 @@ function renderTable() {
     });
     
     tbody.innerHTML = html;
+    console.log('✅ Table rendered');
 }
 
-// Open Add Modal
 window.openAddModal = function() {
     currentEditId = null;
     document.getElementById('modalTitle').textContent = 'Tambah Pengumuman';
     document.getElementById('dataForm').reset();
     document.getElementById('editId').value = '';
     
-    // Set default values
     document.getElementById('kewarganegaraanLakiLaki').value = 'WNI';
     document.getElementById('agamaLakiLaki').value = 'Islam';
     document.getElementById('kewarganegaraanPerempuan').value = 'WNI';
@@ -244,12 +296,10 @@ window.openAddModal = function() {
     document.getElementById('formModal').classList.add('show');
 };
 
-// Close Modal
 window.closeModal = function() {
     document.getElementById('formModal').classList.remove('show');
 };
 
-// Toggle Wali Fields
 window.toggleWaliFields = function() {
     const jenisWali = document.getElementById('jenisWali').value;
     const hubunganGroup = document.getElementById('hubunganWaliGroup');
@@ -268,8 +318,8 @@ window.toggleWaliFields = function() {
     }
 };
 
-// Edit Data
 window.editData = async function(id) {
+    console.log('🔵 Editing data:', id);
     try {
         const snapshot = await getDocs(collection(db, 'announcements'));
         let itemData = null;
@@ -285,11 +335,13 @@ window.editData = async function(id) {
             return;
         }
         
+        console.log('✅ Data found:', itemData);
+        
         currentEditId = id;
         document.getElementById('modalTitle').textContent = 'Edit Pengumuman';
         document.getElementById('editId').value = id;
         
-        // Fill form
+        // Fill form (simplified for debug)
         document.getElementById('nomorPemeriksaan').value = itemData.nomorPemeriksaan;
         document.getElementById('namaLakiLaki').value = itemData.namaLakiLaki;
         document.getElementById('binLakiLaki').value = itemData.binLakiLaki;
@@ -326,29 +378,32 @@ window.editData = async function(id) {
         document.getElementById('formModal').classList.add('show');
         
     } catch (error) {
-        console.error('Error loading data:', error);
-        alert('Gagal memuat data!');
+        console.error('❌ Error loading data:', error);
+        alert('Gagal memuat data: ' + error.message);
     }
 };
 
-// Delete Data
 window.deleteData = async function(id, nomorPemeriksaan) {
     if (!confirm(`Yakin ingin menghapus data ${nomorPemeriksaan}?`)) {
         return;
     }
     
+    console.log('🔵 Deleting:', id);
+    
     try {
         await deleteDoc(doc(db, 'announcements', id));
+        console.log('✅ Deleted successfully');
         alert('✅ Data berhasil dihapus!');
     } catch (error) {
-        console.error('Error deleting:', error);
-        alert('❌ Gagal menghapus data!');
+        console.error('❌ Delete error:', error);
+        alert('❌ Gagal menghapus: ' + error.message);
     }
 };
 
-// Handle Submit
 window.handleSubmit = async function(e) {
     e.preventDefault();
+    
+    console.log('🔵 Submitting form...');
     
     const data = {
         nomorPemeriksaan: document.getElementById('nomorPemeriksaan').value,
@@ -390,16 +445,23 @@ window.handleSubmit = async function(e) {
         data.createdAt = new Date().toISOString();
     }
     
+    console.log('📄 Data to save:', data);
+    
     try {
         const docId = currentEditId || data.nomorPemeriksaan.replace(/[^a-zA-Z0-9]/g, '_');
+        console.log('🔵 Saving to document ID:', docId);
+        
         await setDoc(doc(db, 'announcements', docId), data);
         
+        console.log('✅ Saved successfully!');
         alert(currentEditId ? '✅ Data berhasil diupdate!' : '✅ Data berhasil ditambahkan!');
         closeModal();
         document.getElementById('dataForm').reset();
         
     } catch (error) {
-        console.error('Error saving:', error);
-        alert('❌ Gagal menyimpan data!');
+        console.error('❌ Save error:', error);
+        alert('❌ Gagal menyimpan: ' + error.message);
     }
 };
+
+console.log('✅ Admin script initialization complete');
