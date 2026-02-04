@@ -21,67 +21,229 @@ console.log('🔵 Admin script loaded');
 console.log('🔵 Auth object:', auth);
 console.log('🔵 DB object:', db);
 
+// ========================================
+// PDF DATA INTEGRATION
+// ========================================
+
 let currentEditId = null;
 let unsubscribe = null;
 let allDataAdmin = [];
 let currentFilter = 'aktif';
 
-// Load PDF extracted data if available
-window.addEventListener('DOMContentLoaded', () => {
+// Check for PDF extracted data saat halaman load
+window.addEventListener('load', () => {
+    console.log('📄 Checking for PDF extracted data...');
     const extractedDataJSON = sessionStorage.getItem('pdfExtractedData');
+    
     if (extractedDataJSON) {
-        const extractedData = JSON.parse(extractedDataJSON);
-        console.log('📄 PDF Data loaded:', extractedData);
-        
-        // Auto-fill form jika modal terbuka
-        setTimeout(() => {
+        console.log('📄 PDF Data found in sessionStorage!');
+        try {
+            const extractedData = JSON.parse(extractedDataJSON);
+            console.log('✅ Parsed PDF data:', extractedData);
+            
+            // Clear sessionStorage
+            sessionStorage.removeItem('pdfExtractedData');
+            console.log('✅ SessionStorage cleared');
+            
+            // Fill form dengan data
             fillFormWithPDFData(extractedData);
-            sessionStorage.removeItem('pdfExtractedData'); // Clear setelah pakai
-        }, 1000);
+            
+        } catch (error) {
+            console.error('❌ Error parsing PDF data:', error);
+        }
+    } else {
+        console.log('❌ No PDF data in sessionStorage');
     }
 });
 
 // Fungsi untuk mengisi form dengan data PDF
 function fillFormWithPDFData(data) {
-    // Calon Laki-Laki
-    document.getElementById('namaLakiLaki').value = data.namaLakiLaki || '';
-    document.getElementById('binLakiLaki').value = data.binLakiLaki || '';
-    document.getElementById('ttlLakiLaki').value = data.ttlLakiLaki || '';
-    document.getElementById('kewarganegaraanLakiLaki').value = data.kewarganegaraanLakiLaki || 'WNI';
-    document.getElementById('agamaLakiLaki').value = data.agamaLakiLaki || 'Islam';
-    document.getElementById('pekerjaanLakiLaki').value = data.pekerjaanLakiLaki || '';
-    document.getElementById('alamatLakiLaki').value = data.alamatLakiLaki || '';
+    console.log('🔵 fillFormWithPDFData() called with:', data);
     
-    // Calon Perempuan
-    document.getElementById('namaPerempuan').value = data.namaPerempuan || '';
-    document.getElementById('bintiPerempuan').value = data.bintiPerempuan || '';
-    document.getElementById('ttlPerempuan').value = data.ttlPerempuan || '';
-    document.getElementById('kewarganegaraanPerempuan').value = data.kewarganegaraanPerempuan || 'WNI';
-    document.getElementById('agamaPerempuan').value = data.agamaPerempuan || 'Islam';
-    document.getElementById('pekerjaanPerempuan').value = data.pekerjaanPerempuan || '';
-    document.getElementById('alamatPerempuan').value = data.alamatPerempuan || '';
-    
-    // Wali Nikah
-    document.getElementById('jenisWali').value = data.jenisWali || 'Nasab';
-    toggleWaliFields();
-    document.getElementById('hubunganWali').value = data.hubunganWali || '';
-    document.getElementById('sebabWali').value = data.sebabWali || '';
-    document.getElementById('namaWali').value = data.namaWali || '';
-    document.getElementById('binWali').value = data.binWali || '';
-    document.getElementById('ttlWali').value = data.ttlWali || '';
-    document.getElementById('kewarganegaraanWali').value = data.kewarganegaraanWali || 'WNI';
-    document.getElementById('agamaWali').value = data.agamaWali || 'Islam';
-    document.getElementById('pekerjaanWali').value = data.pekerjaanWali || '';
-    document.getElementById('alamatWali').value = data.alamatWali || '';
-    
-    // Jadwal Nikah
-    document.getElementById('nomorPemeriksaan').value = data.nomorPemeriksaan || '';
-    document.getElementById('hariNikah').value = data.hariNikah || '';
-    document.getElementById('tanggalNikah').value = data.tanggalNikah || '';
-    document.getElementById('tempatNikah').value = data.tempatNikah || '';
-    
-    // Buka modal form
-    openAddModal();
+    try {
+        // Buka modal form
+        openAddModal();
+        
+        // Small delay untuk memastikan form sudah rendered
+        setTimeout(() => {
+            console.log('🔵 Filling form fields...');
+            
+            // Calon Laki-Laki
+            const namaLakiLakiEl = document.getElementById('namaLakiLaki');
+            if (namaLakiLakiEl) {
+                namaLakiLakiEl.value = data.namaLakiLaki || '';
+                console.log('✅ namaLakiLaki set:', data.namaLakiLaki);
+            }
+            
+            const binLakiLakiEl = document.getElementById('binLakiLaki');
+            if (binLakiLakiEl) {
+                binLakiLakiEl.value = data.binLakiLaki || '';
+                console.log('✅ binLakiLaki set:', data.binLakiLaki);
+            }
+            
+            const ttlLakiLakiEl = document.getElementById('ttlLakiLaki');
+            if (ttlLakiLakiEl) {
+                ttlLakiLakiEl.value = data.ttlLakiLaki || '';
+                console.log('✅ ttlLakiLaki set:', data.ttlLakiLaki);
+            }
+            
+            const kewarganegaraanLakiLakiEl = document.getElementById('kewarganegaraanLakiLaki');
+            if (kewarganegaraanLakiLakiEl) {
+                kewarganegaraanLakiLakiEl.value = data.kewarganegaraanLakiLaki || 'WNI';
+            }
+            
+            const agamaLakiLakiEl = document.getElementById('agamaLakiLaki');
+            if (agamaLakiLakiEl) {
+                agamaLakiLakiEl.value = data.agamaLakiLaki || 'Islam';
+            }
+            
+            const pekerjaanLakiLakiEl = document.getElementById('pekerjaanLakiLaki');
+            if (pekerjaanLakiLakiEl) {
+                pekerjaanLakiLakiEl.value = data.pekerjaanLakiLaki || '';
+                console.log('✅ pekerjaanLakiLaki set:', data.pekerjaanLakiLaki);
+            }
+            
+            const alamatLakiLakiEl = document.getElementById('alamatLakiLaki');
+            if (alamatLakiLakiEl) {
+                alamatLakiLakiEl.value = data.alamatLakiLaki || '';
+                console.log('✅ alamatLakiLaki set:', data.alamatLakiLaki);
+            }
+            
+            // Calon Perempuan
+            const namaPerempuanEl = document.getElementById('namaPerempuan');
+            if (namaPerempuanEl) {
+                namaPerempuanEl.value = data.namaPerempuan || '';
+                console.log('✅ namaPerempuan set:', data.namaPerempuan);
+            }
+            
+            const bintiPerempuanEl = document.getElementById('bintiPerempuan');
+            if (bintiPerempuanEl) {
+                bintiPerempuanEl.value = data.bintiPerempuan || '';
+                console.log('✅ bintiPerempuan set:', data.bintiPerempuan);
+            }
+            
+            const ttlPerempuanEl = document.getElementById('ttlPerempuan');
+            if (ttlPerempuanEl) {
+                ttlPerempuanEl.value = data.ttlPerempuan || '';
+                console.log('✅ ttlPerempuan set:', data.ttlPerempuan);
+            }
+            
+            const kewarganegaraanPerempuanEl = document.getElementById('kewarganegaraanPerempuan');
+            if (kewarganegaraanPerempuanEl) {
+                kewarganegaraanPerempuanEl.value = data.kewarganegaraanPerempuan || 'WNI';
+            }
+            
+            const agamaPerempuanEl = document.getElementById('agamaPerempuan');
+            if (agamaPerempuanEl) {
+                agamaPerempuanEl.value = data.agamaPerempuan || 'Islam';
+            }
+            
+            const pekerjaanPerempuanEl = document.getElementById('pekerjaanPerempuan');
+            if (pekerjaanPerempuanEl) {
+                pekerjaanPerempuanEl.value = data.pekerjaanPerempuan || '';
+                console.log('✅ pekerjaanPerempuan set:', data.pekerjaanPerempuan);
+            }
+            
+            const alamatPerempuanEl = document.getElementById('alamatPerempuan');
+            if (alamatPerempuanEl) {
+                alamatPerempuanEl.value = data.alamatPerempuan || '';
+                console.log('✅ alamatPerempuan set:', data.alamatPerempuan);
+            }
+            
+            // Wali Nikah
+            const jenisWaliEl = document.getElementById('jenisWali');
+            if (jenisWaliEl) {
+                jenisWaliEl.value = data.jenisWali || 'Nasab';
+                console.log('✅ jenisWali set:', data.jenisWali);
+                toggleWaliFields();
+            }
+            
+            const hubunganWaliEl = document.getElementById('hubunganWali');
+            if (hubunganWaliEl) {
+                hubunganWaliEl.value = data.hubunganWali || '';
+                console.log('✅ hubunganWali set:', data.hubunganWali);
+            }
+            
+            const sebabWaliEl = document.getElementById('sebabWali');
+            if (sebabWaliEl) {
+                sebabWaliEl.value = data.sebabWali || '';
+                console.log('✅ sebabWali set:', data.sebabWali);
+            }
+            
+            const namaWaliEl = document.getElementById('namaWali');
+            if (namaWaliEl) {
+                namaWaliEl.value = data.namaWali || '';
+                console.log('✅ namaWali set:', data.namaWali);
+            }
+            
+            const binWaliEl = document.getElementById('binWali');
+            if (binWaliEl) {
+                binWaliEl.value = data.binWali || '';
+                console.log('✅ binWali set:', data.binWali);
+            }
+            
+            const ttlWaliEl = document.getElementById('ttlWali');
+            if (ttlWaliEl) {
+                ttlWaliEl.value = data.ttlWali || '';
+                console.log('✅ ttlWali set:', data.ttlWali);
+            }
+            
+            const kewarganegaraanWaliEl = document.getElementById('kewarganegaraanWali');
+            if (kewarganegaraanWaliEl) {
+                kewarganegaraanWaliEl.value = data.kewarganegaraanWali || 'WNI';
+            }
+            
+            const agamaWaliEl = document.getElementById('agamaWali');
+            if (agamaWaliEl) {
+                agamaWaliEl.value = data.agamaWali || 'Islam';
+            }
+            
+            const pekerjaanWaliEl = document.getElementById('pekerjaanWali');
+            if (pekerjaanWaliEl) {
+                pekerjaanWaliEl.value = data.pekerjaanWali || '';
+                console.log('✅ pekerjaanWali set:', data.pekerjaanWali);
+            }
+            
+            const alamatWaliEl = document.getElementById('alamatWali');
+            if (alamatWaliEl) {
+                alamatWaliEl.value = data.alamatWali || '';
+                console.log('✅ alamatWali set:', data.alamatWali);
+            }
+            
+            // Jadwal Nikah
+            const nomorPemeriksaanEl = document.getElementById('nomorPemeriksaan');
+            if (nomorPemeriksaanEl) {
+                nomorPemeriksaanEl.value = data.nomorPemeriksaan || '';
+                console.log('✅ nomorPemeriksaan set:', data.nomorPemeriksaan);
+            }
+            
+            const hariNikahEl = document.getElementById('hariNikah');
+            if (hariNikahEl) {
+                hariNikahEl.value = data.hariNikah || '';
+                console.log('✅ hariNikah set:', data.hariNikah);
+            }
+            
+            const tanggalNikahEl = document.getElementById('tanggalNikah');
+            if (tanggalNikahEl) {
+                tanggalNikahEl.value = data.tanggalNikah || '';
+                console.log('✅ tanggalNikah set:', data.tanggalNikah);
+            }
+            
+            const tempatNikahEl = document.getElementById('tempatNikah');
+            if (tempatNikahEl) {
+                tempatNikahEl.value = data.tempatNikah || '';
+                console.log('✅ tempatNikah set:', data.tempatNikah);
+            }
+            
+            console.log('✅ All form fields filled successfully!');
+            alert('✅ Data dari PDF berhasil diisikan!\n\nSilakan review dan klik "Simpan Data"');
+            
+        }, 500);
+        
+    } catch (error) {
+        console.error('❌ Error in fillFormWithPDFData:', error);
+        alert('❌ Terjadi kesalahan saat mengisi form: ' + error.message);
+    }
 }
 
 function parseIndonesianDate(dateStr) {
@@ -206,7 +368,7 @@ window.handleLogin = async function(e) {
 };
 
 // Handle Logout
-window.handleLogout = async function() {
+window.handleLogout = async () {
     if (confirm('Yakin ingin logout?')) {
         try {
             await signOut(auth);
@@ -219,7 +381,7 @@ window.handleLogout = async function() {
 };
 
 // Load data
-function loadData() {
+ loadData() {
     console.log('🔵 loadData() called');
     
     const q = collection(db, 'announcements');
@@ -293,7 +455,7 @@ window.changeFilter = function(filter) {
     renderTable();
 };
 
-function renderTable() {
+ renderTable() {
     const tbody = document.getElementById('tableBody');
     const data = getFilteredData();
     
@@ -338,7 +500,7 @@ function renderTable() {
     console.log('✅ Table rendered');
 }
 
-window.openAddModal = function() {
+window.openAddModal = () {
     currentEditId = null;
     document.getElementById('modalTitle').textContent = 'Tambah Pengumuman';
     document.getElementById('dataForm').reset();
@@ -352,13 +514,14 @@ window.openAddModal = function() {
     document.getElementById('agamaWali').value = 'Islam';
     
     document.getElementById('formModal').classList.add('show');
+    console.log('✅ Modal opened');
 };
 
-window.closeModal = function() {
+window.closeModal = () {
     document.getElementById('formModal').classList.remove('show');
 };
 
-window.toggleWaliFields = function() {
+window.toggleWaliFields = () {
     const jenisWali = document.getElementById('jenisWali').value;
     const hubunganGroup = document.getElementById('hubunganWaliGroup');
     const sebabGroup = document.getElementById('sebabWaliGroup');
@@ -376,7 +539,7 @@ window.toggleWaliFields = function() {
     }
 };
 
-window.editData = async function(id) {
+window.editData = async (id) {
     console.log('🔵 Editing data:', id);
     try {
         const snapshot = await getDocs(collection(db, 'announcements'));
@@ -441,7 +604,7 @@ window.editData = async function(id) {
     }
 };
 
-window.deleteData = async function(id, nomorPemeriksaan) {
+window.deleteData = async (id, nomorPemeriksaan) {
     if (!confirm(`Yakin ingin menghapus data ${nomorPemeriksaan}?`)) {
         return;
     }
@@ -458,7 +621,7 @@ window.deleteData = async function(id, nomorPemeriksaan) {
     }
 };
 
-window.handleSubmit = async function(e) {
+window.handleSubmit = async (e) {
     e.preventDefault();
     
     console.log('🔵 Submitting form...');
