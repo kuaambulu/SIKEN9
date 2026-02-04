@@ -782,4 +782,52 @@
                 'pekerjaanWali', 'alamatWali', 'hariNikah', 'tanggalNikah', 'tempatNikah'
             ];
 
-            fields.
+            fields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.addEventListener('change', () => {
+                        extractedData[fieldId] = element.value;
+                        console.log(`Updated ${fieldId}:`, element.value);
+                    });
+                    element.addEventListener('input', () => {
+                        extractedData[fieldId] = element.value;
+                    });
+                }
+            });
+        }
+
+        function fillAdminForm() {
+            if (!extractedData) {
+                showStatus('❌ Tidak ada data yang diekstrak', 'error');
+                return;
+            }
+
+            // Store data to sessionStorage untuk diakses dari admin.html
+            sessionStorage.setItem('pdfExtractedData', JSON.stringify(extractedData));
+
+            showStatus('✅ Data siap! Membuka Admin Panel...', 'success');
+
+            // Redirect ke admin.html
+            setTimeout(() => {
+                window.location.href = 'admin.html';
+            }, 1500);
+        }
+
+        function resetUpload() {
+            pdfInput.value = '';
+            extractedData = null;
+            editMode = false;
+            document.getElementById('previewSection').classList.remove('show');
+            document.getElementById('statusMessage').classList.remove('show');
+            document.getElementById('loading').classList.remove('show');
+            updateEditToggleButton();
+        }
+
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message show ${type}`;
+        }
+    </script>
+</body>
+</html>
