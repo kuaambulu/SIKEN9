@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload & Data Extraction - SIKEN9</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .upload-section.dragover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .upload-text p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        #pdfInput {
+            display: none;
+        }
+
+        .btn-upload {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #0c5460;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .preview-section {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .preview-section.show {
+            display: block;
+        }
+
+        .preview-title {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .data-preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .preview-row {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .preview-row:last-child {
+            border-bottom: none;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .preview-value {
+            color: #666;
+            word-break: break-word;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #4caf50;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .status-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .preview-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Upload Dokumen Model N9</h1>
+        <p class="subtitle">Ekstrak data otomatis dari PDF Pengumuman Nikah</p>
+
+        <div class="info-box">
+            <h3>ℹ️ Panduan Penggunaan</h3>
+            <p>
+                • Upload file PDF dokumen Model N9 (Pengumuman Nikah)<br>
+                • Sistem akan otomatis membaca dan mengekstrak data<br>
+                • Data akan ditampilkan untuk preview sebelum disimpan<br>
+                • Klik tombol "Isi Form" untuk mengisi data ke admin panel
+            </p>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📤</div>
+            <div class="upload-text">
+                <p style="font-weight: 600; color: #333; margin-bottom: 10px;">Drag & drop file PDF di sini</p>
+                <p>atau klik tombol di bawah untuk memilih file</p>
+            </div>
+            <input type="file" id="pdfInput" accept=".pdf" />
+            <button class="btn-upload" onclick="document.getElementById('pdfInput').click()">
+                Pilih File PDF
+            </button>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Memproses file PDF...</p>
+        </div>
+
+        <div id="previewSection" class="preview-section">
+            <div class="preview-title">✅ Data Hasil Ekstrak PDF</div>
+            
+            <div class="section-header">👨 Data Calon Pengantin Laki-Laki</div>
+            <div class="data-preview" id="previewLakiLaki"></div>
+
+            <div class="section-header">👩 Data Calon Pengantin Perempuan</div>
+            <div class="data-preview" id="previewPerempuan"></div>
+
+            <div class="section-header">👤 Data Wali Nikah</div>
+            <div class="data-preview" id="previewWali"></div>
+
+            <div class="section-header">📅 Jadwal Akad Nikah</div>
+            <div class="data-preview" id="previewJadwal"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="fillAdminForm()">
+                    ✅ Isi Data ke Form Admin
+                </button>
+                <button class="btn btn-secondary" onclick="resetUpload()">
+                    🔄 Upload File Baru
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let extractedData = null;
+
+        // Setup drag & drop
+        const uploadSection = document.getElementById('uploadSection');
+        const pdfInput = document.getElementById('pdfInput');
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.classList.add('dragover');
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.classList.remove('dragover');
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                pdfInput.files = files;
+                processPDF(files[0]);
+            }
+        });
+
+        pdfInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processPDF(e.target.files[0]);
+            }
+        });
+
+        async function processPDF(file) {
+            const loading = document.getElementById('loading');
+            const statusMessage = document.getElementById('statusMessage');
+
+            loading.classList.add('show');
+            statusMessage.classList.remove('show');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+                let fullText = '';
+
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    fullText += pageText + '\n';
+                }
+
+                extractedData = parseN9Document(fullText);
+                displayPreview(extractedData);
+
+                loading.classList.remove('show');
+                showStatus('✅ File berhasil diproses!', 'success');
+                document.getElementById('previewSection').classList.add('show');
+
+            } catch (error) {
+                loading.classList.remove('show');
+                showStatus('❌ Error: ' + error.message, 'error');
+                console.error('PDF processing error:', error);
+            }
+        }
+
+        function parseN9Document(text) {
+            const data = {
+                nomorPemeriksaan: '',
+                // Calon Laki-Laki
+                namaLakiLaki: '',
+                binLakiLaki: '',
+                ttlLakiLaki: '',
+                kewarganegaraanLakiLaki: 'WNI',
+                agamaLakiLaki: 'Islam',
+                pekerjaanLakiLaki: '',
+                alamatLakiLaki: '',
+                // Calon Perempuan
+                namaPerempuan: '',
+                bintiPerempuan: '',
+                ttlPerempuan: '',
+                kewarganegaraanPerempuan: 'WNI',
+                agamaPerempuan: 'Islam',
+                pekerjaanPerempuan: '',
+                alamatPerempuan: '',
+                // Wali
+                jenisWali: 'Nasab',
+                hubunganWali: '',
+                sebabWali: '',
+                namaWali: '',
+                binWali: '',
+                ttlWali: '',
+                kewarganegaraanWali: 'WNI',
+                agamaWali: 'Islam',
+                pekerjaanWali: '',
+                alamatWali: '',
+                // Jadwal
+                hariNikah: '',
+                tanggalNikah: '',
+                tempatNikah: ''
+            };
+
+            // Extract Nomor Pemeriksaan
+            const nomorMatch = text.match(/Nomor Pemeriksaan\s*:\s*([A-Z0-9]+)/i);
+            if (nomorMatch) data.nomorPemeriksaan = nomorMatch[1].trim();
+
+            // Extract Calon Laki-Laki (Section 1)
+            const lakiLakiSection = text.match(/1\.\s*CALON PENGANTIN LAKI-LAKI([\s\S]*?)2\.\s*CALON PENGANTIN/i);
+            if (lakiLakiSection) {
+                const section = lakiLakiSection[1];
+                
+                const namaMatch = section.match(/Nama\s*:\s*([^\n]+)/i);
+                if (namaMatch) data.namaLakiLaki = namaMatch[1].trim();
+                
+                const binMatch = section.match(/Bin\s*:\s*([^\n]+)/i);
+                if (binMatch) data.binLakiLaki = binMatch[1].trim();
+                
+                const ttlMatch = section.match(/Tempat dan Tanggal Lahir\s*:\s*([^\n]+)/i);
+                if (ttlMatch) {
+                    const ttl = ttlMatch[1].trim();
+                    data.ttlLakiLaki = ttl.replace(/\s+/g, ' ');
+                }
+                
+                const pekerjaanMatch = section.match(/Pekerjaan\s*:\s*([^\n]+)/i);
+                if (pekerjaanMatch) data.pekerjaanLakiLaki = pekerjaanMatch[1].trim();
+                
+                const alamatMatch = section.match(/Alamat\s*:\s*([^\n]+)/i);
+                if (alamatMatch) data.alamatLakiLaki = alamatMatch[1].trim();
+            }
+
+            // Extract Calon Perempuan (Section 2)
+            const perempuanSection = text.match(/2\.\s*CALON PENGANTIN\s*(?:WANITA|PEREMPUAN)([\s\S]*?)3\.\s*WALI NIKAH/i);
+            if (perempuanSection) {
+                const section = perempuanSection[1];
+                
+                const namaMatch = section.match(/Nama\s*:\s*([^\n]+)/i);
+                if (namaMatch) data.namaPerempuan = namaMatch[1].trim();
+                
+                const binMatch = section.match(/Binti\s*:\s*([^\n]+)/i);
+                if (binMatch) data.bintiPerempuan = binMatch[1].trim();
+                
+                const ttlMatch = section.match(/Tempat dan Tanggal Lahir\s*:\s*([^\n]+)/i);
+                if (ttlMatch) {
+                    const ttl = ttlMatch[1].trim();
+                    data.ttlPerempuan = ttl.replace(/\s+/g, ' ');
+                }
+                
+                const pekerjaanMatch = section.match(/Pekerjaan\s*:\s*([^\n]+)/i);
+                if (pekerjaanMatch) data.pekerjaanPerempuan = pekerjaanMatch[1].trim();
+                
+                const alamatMatch = section.match(/Alamat\s*:\s*([^\n]+)/i);
+                if (alamatMatch) data.alamatPerempuan = alamatMatch[1].trim();
+            }
+
+            // Extract Wali Nikah (Section 3)
+            const waliSection = text.match(/3\.\s*WALI NIKAH([\s\S]*?)4\.\s*HARI/i);
+            if (waliSection) {
+                const section = waliSection[1];
+                
+                // Determine Jenis Wali
+                if (section.match(/Nasab/i)) {
+                    data.jenisWali = 'Nasab';
+                    const hubunganMatch = section.match(/Hubungan Wali\s*:\s*([^\n]+)/i);
+                    if (hubunganMatch) data.hubunganWali = hubunganMatch[1].trim();
+                } else if (section.match(/Hakim/i)) {
+                    data.jenisWali = 'Hakim';
+                    const sebabMatch = section.match(/Sebab\s*:\s*([^\n]+)/i);
+                    if (sebabMatch) data.sebabWali = sebabMatch[1].trim();
+                }
+                
+                const namaMatch = section.match(/Nama\s*:\s*([^\n]+)/i);
+                if (namaMatch) data.namaWali = namaMatch[1].trim();
+                
+                const binMatch = section.match(/Bin\s*:\s*([^\n]+)/i);
+                if (binMatch) data.binWali = binMatch[1].trim();
+                
+                const ttlMatch = section.match(/Tempat dan Tanggal Lahir\s*:\s*([^\n]+)/i);
+                if (ttlMatch) {
+                    const ttl = ttlMatch[1].trim();
+                    data.ttlWali = ttl.replace(/\s+/g, ' ');
+                }
+                
+                const pekerjaanMatch = section.match(/Pekerjaan\s*:\s*([^\n]+)/i);
+                if (pekerjaanMatch) data.pekerjaanWali = pekerjaanMatch[1].trim();
+                
+                const alamatMatch = section.match(/Alamat\s*:\s*([^\n]+)/i);
+                if (alamatMatch) data.alamatWali = alamatMatch[1].trim();
+            }
+
+            // Extract Jadwal Nikah (Section 4)
+            const jadwalSection = text.match(/4\.\s*HARI,?\s*TANGGAL\s*(?:TEMPAT)?\s*NIKAH([\s\S]*?)(?:Kepala|$)/i);
+            if (jadwalSection) {
+                const section = jadwalSection[1];
+                
+                const hariMatch = section.match(/Hari\s*:\s*([^\n]+)/i);
+                if (hariMatch) data.hariNikah = hariMatch[1].trim();
+                
+                const tanggalMatch = section.match(/Tanggal\s*:\s*([^\n]+)/i);
+                if (tanggalMatch) data.tanggalNikah = tanggalMatch[1].trim();
+                
+                const tempatMatch = section.match(/Tempat\s*:\s*([^\n]+)/i);
+                if (tempatMatch) data.tempatNikah = tempatMatch[1].trim();
+            }
+
+            return data;
+        }
+
+        function displayPreview(data) {
+            // Calon Laki-Laki
+            document.getElementById('previewLakiLaki').innerHTML = `
+                <div class="preview-row">
+                    <div class="preview-label">Nama Lengkap</div>
+                    <div class="preview-value">${data.namaLakiLaki}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Bin</div>
+                    <div class="preview-value">${data.binLakiLaki}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">TTL</div>
+                    <div class="preview-value">${data.ttlLakiLaki}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Pekerjaan</div>
+                    <div class="preview-value">${data.pekerjaanLakiLaki}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Alamat</div>
+                    <div class="preview-value">${data.alamatLakiLaki}</div>
+                </div>
+            `;
+
+            // Calon Perempuan
+            document.getElementById('previewPerempuan').innerHTML = `
+                <div class="preview-row">
+                    <div class="preview-label">Nama Lengkap</div>
+                    <div class="preview-value">${data.namaPerempuan}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Binti</div>
+                    <div class="preview-value">${data.bintiPerempuan}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">TTL</div>
+                    <div class="preview-value">${data.ttlPerempuan}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Pekerjaan</div>
+                    <div class="preview-value">${data.pekerjaanPerempuan}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Alamat</div>
+                    <div class="preview-value">${data.alamatPerempuan}</div>
+                </div>
+            `;
+
+            // Wali Nikah
+            document.getElementById('previewWali').innerHTML = `
+                <div class="preview-row">
+                    <div class="preview-label">Jenis Wali</div>
+                    <div class="preview-value">${data.jenisWali}</div>
+                </div>
+                ${data.jenisWali === 'Nasab' ? 
+                    `<div class="preview-row">
+                        <div class="preview-label">Hubungan</div>
+                        <div class="preview-value">${data.hubunganWali}</div>
+                    </div>` :
+                    `<div class="preview-row">
+                        <div class="preview-label">Sebab</div>
+                        <div class="preview-value">${data.sebabWali}</div>
+                    </div>`
+                }
+                <div class="preview-row">
+                    <div class="preview-label">Nama Wali</div>
+                    <div class="preview-value">${data.namaWali}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Bin</div>
+                    <div class="preview-value">${data.binWali}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">TTL</div>
+                    <div class="preview-value">${data.ttlWali}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Pekerjaan</div>
+                    <div class="preview-value">${data.pekerjaanWali}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Alamat</div>
+                    <div class="preview-value">${data.alamatWali}</div>
+                </div>
+            `;
+
+            // Jadwal Nikah
+            document.getElementById('previewJadwal').innerHTML = `
+                <div class="preview-row">
+                    <div class="preview-label">Nomor Pemeriksaan</div>
+                    <div class="preview-value">${data.nomorPemeriksaan}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Hari</div>
+                    <div class="preview-value">${data.hariNikah}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Tanggal</div>
+                    <div class="preview-value">${data.tanggalNikah}</div>
+                </div>
+                <div class="preview-row">
+                    <div class="preview-label">Tempat</div>
+                    <div class="preview-value">${data.tempatNikah}</div>
+                </div>
+            `;
+        }
+
+        function fillAdminForm() {
+            if (!extractedData) {
+                showStatus('❌ Tidak ada data yang diekstrak', 'error');
+                return;
+            }
+
+            // Store data to sessionStorage untuk diakses dari admin.html
+            sessionStorage.setItem('pdfExtractedData', JSON.stringify(extractedData));
+
+            showStatus('✅ Data siap! Membuka Admin Panel...', 'success');
+
+            // Redirect ke admin.html
+            setTimeout(() => {
+                window.location.href = 'admin.html';
+            }, 1500);
+        }
+
+        function resetUpload() {
+            pdfInput.value = '';
+            extractedData = null;
+            document.getElementById('previewSection').classList.remove('show');
+            document.getElementById('statusMessage').classList.remove('show');
+            document.getElementById('loading').classList.remove('show');
+        }
+
+        function showStatus(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message show ${type}`;
+        }
+    </script>
+</body>
+</html>
