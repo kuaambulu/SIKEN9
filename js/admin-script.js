@@ -2,7 +2,7 @@
 // SIKEN9 Admin Panel - DEBUG Version
 // ============================================
 
-import { db, auth } from '/firebase-config.js';
+import { db, auth } from 'firebase-config.js';
 import { 
     collection, 
     doc, 
