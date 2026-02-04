@@ -795,24 +795,28 @@
                 }
             });
         }
-
-        function fillAdminForm() {
-            if (!extractedData) {
-                showStatus('❌ Tidak ada data yang diekstrak', 'error');
-                return;
-            }
-
-            // Store data to sessionStorage untuk diakses dari admin.html
-            sessionStorage.setItem('pdfExtractedData', JSON.stringify(extractedData));
-
-            showStatus('✅ Data siap! Membuka Admin Panel...', 'success');
-
-            // Redirect ke admin.html
-            setTimeout(() => {
-                window.location.href = 'admin.html';
-            }, 1500);
+    function fillAdminForm() {
+        if (!extractedData) {
+        showStatus('❌ Tidak ada data yang diekstrak', 'error');
+        return;
         }
 
+        console.log('📤 Sending data to sessionStorage:', extractedData);
+    
+        // Store data to sessionStorage
+        sessionStorage.setItem('pdfExtractedData', JSON.stringify(extractedData));
+    
+        // Verify data tersimpan
+        const stored = sessionStorage.getItem('pdfExtractedData');
+        console.log('✅ Data stored in sessionStorage:', stored);
+
+        showStatus('✅ Data siap! Membuka Admin Panel...', 'success');
+
+    // Redirect ke admin.html
+        setTimeout(() => {
+        window.location.href = 'admin.html';
+        }, 1500);
+    }
         function resetUpload() {
             pdfInput.value = '';
             extractedData = null;
