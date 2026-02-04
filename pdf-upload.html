@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -133,6 +133,34 @@
             font-weight: 600;
         }
 
+        .edit-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+
+        .btn-toggle-edit {
+            padding: 8px 20px;
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-toggle-edit:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-toggle-edit.active {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border-color: #ff9800;
+        }
+
         .data-preview {
             background: #f8f9fa;
             border-radius: 10px;
@@ -163,6 +191,52 @@
             word-break: break-word;
         }
 
+        /* Edit Mode Styles */
+        .preview-row.edit-mode {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .edit-mode-input {
+            background: white;
+            border: 2px solid #667eea;
+        }
+
         .section-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -178,6 +252,7 @@
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -207,6 +282,16 @@
 
         .btn-secondary:hover {
             background: #d0d0d0;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 152, 0, 0.4);
         }
 
         .loading {
@@ -263,6 +348,16 @@
             border: 2px solid #ffc107;
         }
 
+        .edit-hint {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #856404;
+            font-size: 0.95em;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -279,6 +374,14 @@
             .btn {
                 width: 100%;
             }
+
+            .edit-toggle {
+                flex-direction: column;
+            }
+
+            .btn-toggle-edit {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -292,7 +395,7 @@
             <p>
                 • Upload file PDF dokumen Model N9 (Pengumuman Nikah)<br>
                 • Sistem akan otomatis membaca dan mengekstrak data<br>
-                • Data akan ditampilkan untuk preview sebelum disimpan<br>
+                • Edit data jika ada yang perlu diperbaiki<br>
                 • Klik tombol "Isi Form" untuk mengisi data ke admin panel
             </p>
         </div>
@@ -319,6 +422,16 @@
         <div id="previewSection" class="preview-section">
             <div class="preview-title">✅ Data Hasil Ekstrak PDF</div>
             
+            <div class="edit-hint" id="editHint" style="display: none;">
+                ✏️ Mode Edit Aktif - Ubah data sesuai kebutuhan, kemudian simpan perubahan
+            </div>
+
+            <div class="edit-toggle">
+                <button class="btn-toggle-edit" id="editToggleBtn" onclick="toggleEditMode()">
+                    ✏️ Edit Data
+                </button>
+            </div>
+
             <div class="section-header">👨 Data Calon Pengantin Laki-Laki</div>
             <div class="data-preview" id="previewLakiLaki"></div>
 
@@ -349,6 +462,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         let extractedData = null;
+        let editMode = false;
 
         // Setup drag & drop
         const uploadSection = document.getElementById('uploadSection');
@@ -405,6 +519,8 @@
                 loading.classList.remove('show');
                 showStatus('✅ File berhasil diproses!', 'success');
                 document.getElementById('previewSection').classList.add('show');
+                editMode = false;
+                updateEditToggleButton();
 
             } catch (error) {
                 loading.classList.remove('show');
@@ -554,144 +670,116 @@
             return data;
         }
 
+        function toggleEditMode() {
+            editMode = !editMode;
+            updateEditToggleButton();
+            displayPreview(extractedData);
+        }
+
+        function updateEditToggleButton() {
+            const btn = document.getElementById('editToggleBtn');
+            const hint = document.getElementById('editHint');
+            
+            if (editMode) {
+                btn.classList.add('active');
+                hint.style.display = 'block';
+            } else {
+                btn.classList.remove('active');
+                hint.style.display = 'none';
+            }
+        }
+
         function displayPreview(data) {
             // Calon Laki-Laki
-            document.getElementById('previewLakiLaki').innerHTML = `
-                <div class="preview-row">
-                    <div class="preview-label">Nama Lengkap</div>
-                    <div class="preview-value">${data.namaLakiLaki}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Bin</div>
-                    <div class="preview-value">${data.binLakiLaki}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">TTL</div>
-                    <div class="preview-value">${data.ttlLakiLaki}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Pekerjaan</div>
-                    <div class="preview-value">${data.pekerjaanLakiLaki}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Alamat</div>
-                    <div class="preview-value">${data.alamatLakiLaki}</div>
-                </div>
-            `;
+            document.getElementById('previewLakiLaki').innerHTML = generateEditableRow('namaLakiLaki', 'Nama Lengkap', data.namaLakiLaki) +
+                generateEditableRow('binLakiLaki', 'Bin', data.binLakiLaki) +
+                generateEditableRow('ttlLakiLaki', 'TTL', data.ttlLakiLaki) +
+                generateEditableRow('pekerjaanLakiLaki', 'Pekerjaan', data.pekerjaanLakiLaki) +
+                generateEditableRow('alamatLakiLaki', 'Alamat', data.alamatLakiLaki);
 
             // Calon Perempuan
-            document.getElementById('previewPerempuan').innerHTML = `
-                <div class="preview-row">
-                    <div class="preview-label">Nama Lengkap</div>
-                    <div class="preview-value">${data.namaPerempuan}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Binti</div>
-                    <div class="preview-value">${data.bintiPerempuan}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">TTL</div>
-                    <div class="preview-value">${data.ttlPerempuan}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Pekerjaan</div>
-                    <div class="preview-value">${data.pekerjaanPerempuan}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Alamat</div>
-                    <div class="preview-value">${data.alamatPerempuan}</div>
-                </div>
-            `;
+            document.getElementById('previewPerempuan').innerHTML = generateEditableRow('namaPerempuan', 'Nama Lengkap', data.namaPerempuan) +
+                generateEditableRow('bintiPerempuan', 'Binti', data.bintiPerempuan) +
+                generateEditableRow('ttlPerempuan', 'TTL', data.ttlPerempuan) +
+                generateEditableRow('pekerjaanPerempuan', 'Pekerjaan', data.pekerjaanPerempuan) +
+                generateEditableRow('alamatPerempuan', 'Alamat', data.alamatPerempuan);
 
             // Wali Nikah
-            document.getElementById('previewWali').innerHTML = `
-                <div class="preview-row">
-                    <div class="preview-label">Jenis Wali</div>
-                    <div class="preview-value">${data.jenisWali}</div>
-                </div>
-                ${data.jenisWali === 'Nasab' ? 
-                    `<div class="preview-row">
-                        <div class="preview-label">Hubungan</div>
-                        <div class="preview-value">${data.hubunganWali}</div>
-                    </div>` :
-                    `<div class="preview-row">
-                        <div class="preview-label">Sebab</div>
-                        <div class="preview-value">${data.sebabWali}</div>
-                    </div>`
-                }
-                <div class="preview-row">
-                    <div class="preview-label">Nama Wali</div>
-                    <div class="preview-value">${data.namaWali}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Bin</div>
-                    <div class="preview-value">${data.binWali}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">TTL</div>
-                    <div class="preview-value">${data.ttlWali}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Pekerjaan</div>
-                    <div class="preview-value">${data.pekerjaanWali}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Alamat</div>
-                    <div class="preview-value">${data.alamatWali}</div>
-                </div>
-            `;
+            const waliHtml = generateEditableSelect('jenisWali', 'Jenis Wali', data.jenisWali, ['Nasab', 'Hakim']) +
+                (data.jenisWali === 'Nasab' ? 
+                    generateEditableRow('hubunganWali', 'Hubungan', data.hubunganWali) :
+                    generateEditableRow('sebabWali', 'Sebab', data.sebabWali)
+                ) +
+                generateEditableRow('namaWali', 'Nama Wali', data.namaWali) +
+                generateEditableRow('binWali', 'Bin', data.binWali) +
+                generateEditableRow('ttlWali', 'TTL', data.ttlWali) +
+                generateEditableRow('pekerjaanWali', 'Pekerjaan', data.pekerjaanWali) +
+                generateEditableRow('alamatWali', 'Alamat', data.alamatWali);
+            
+            document.getElementById('previewWali').innerHTML = waliHtml;
 
             // Jadwal Nikah
-            document.getElementById('previewJadwal').innerHTML = `
-                <div class="preview-row">
-                    <div class="preview-label">Nomor Pemeriksaan</div>
-                    <div class="preview-value">${data.nomorPemeriksaan}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Hari</div>
-                    <div class="preview-value">${data.hariNikah}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Tanggal</div>
-                    <div class="preview-value">${data.tanggalNikah}</div>
-                </div>
-                <div class="preview-row">
-                    <div class="preview-label">Tempat</div>
-                    <div class="preview-value">${data.tempatNikah}</div>
-                </div>
-            `;
-        }
+            document.getElementById('previewJadwal').innerHTML = generateEditableRow('nomorPemeriksaan', 'Nomor Pemeriksaan', data.nomorPemeriksaan) +
+                generateEditableSelect('hariNikah', 'Hari', data.hariNikah, ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']) +
+                generateEditableRow('tanggalNikah', 'Tanggal', data.tanggalNikah) +
+                generateEditableRow('tempatNikah', 'Tempat', data.tempatNikah);
 
-        function fillAdminForm() {
-            if (!extractedData) {
-                showStatus('❌ Tidak ada data yang diekstrak', 'error');
-                return;
+            // Setup event listeners untuk edit mode
+            if (editMode) {
+                setupEditListeners();
             }
-
-            // Store data to sessionStorage untuk diakses dari admin.html
-            sessionStorage.setItem('pdfExtractedData', JSON.stringify(extractedData));
-
-            showStatus('✅ Data siap! Membuka Admin Panel...', 'success');
-
-            // Redirect ke admin.html
-            setTimeout(() => {
-                window.location.href = 'admin.html';
-            }, 1500);
         }
 
-        function resetUpload() {
-            pdfInput.value = '';
-            extractedData = null;
-            document.getElementById('previewSection').classList.remove('show');
-            document.getElementById('statusMessage').classList.remove('show');
-            document.getElementById('loading').classList.remove('show');
+        function generateEditableRow(fieldId, label, value) {
+            if (!editMode) {
+                return `
+                    <div class="preview-row">
+                        <div class="preview-label">${label}</div>
+                        <div class="preview-value">${value}</div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="preview-row edit-mode">
+                        <div class="form-group">
+                            <label for="${fieldId}">${label}</label>
+                            <textarea id="${fieldId}" class="edit-mode-input">${value}</textarea>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
-        function showStatus(message, type) {
-            const statusMessage = document.getElementById('statusMessage');
-            statusMessage.textContent = message;
-            statusMessage.className = `status-message show ${type}`;
+        function generateEditableSelect(fieldId, label, value, options) {
+            if (!editMode) {
+                return `
+                    <div class="preview-row">
+                        <div class="preview-label">${label}</div>
+                        <div class="preview-value">${value}</div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="preview-row edit-mode">
+                        <div class="form-group">
+                            <label for="${fieldId}">${label}</label>
+                            <select id="${fieldId}" class="edit-mode-input">
+                                ${options.map(opt => `<option value="${opt}" ${opt === value ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+            }
         }
-    </script>
-</body>
-</html>
+
+        function setupEditListeners() {
+            // Update extractedData saat user mengubah input
+            const fields = [
+                'nomorPemeriksaan', 'namaLakiLaki', 'binLakiLaki', 'ttlLakiLaki', 
+                'pekerjaanLakiLaki', 'alamatLakiLaki', 'namaPerempuan', 'bintiPerempuan', 
+                'ttlPerempuan', 'pekerjaanPerempuan', 'alamatPerempuan', 'jenisWali', 
+                'hubunganWali', 'sebabWali', 'namaWali', 'binWali', 'ttlWali', 
+                'pekerjaanWali', 'alamatWali', 'hariNikah', 'tanggalNikah', 'tempatNikah'
+            ];
+
+            fields.
