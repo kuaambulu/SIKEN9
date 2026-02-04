@@ -26,6 +26,64 @@ let unsubscribe = null;
 let allDataAdmin = [];
 let currentFilter = 'aktif';
 
+// Load PDF extracted data if available
+window.addEventListener('DOMContentLoaded', () => {
+    const extractedDataJSON = sessionStorage.getItem('pdfExtractedData');
+    if (extractedDataJSON) {
+        const extractedData = JSON.parse(extractedDataJSON);
+        console.log('📄 PDF Data loaded:', extractedData);
+        
+        // Auto-fill form jika modal terbuka
+        setTimeout(() => {
+            fillFormWithPDFData(extractedData);
+            sessionStorage.removeItem('pdfExtractedData'); // Clear setelah pakai
+        }, 1000);
+    }
+});
+
+// Fungsi untuk mengisi form dengan data PDF
+function fillFormWithPDFData(data) {
+    // Calon Laki-Laki
+    document.getElementById('namaLakiLaki').value = data.namaLakiLaki || '';
+    document.getElementById('binLakiLaki').value = data.binLakiLaki || '';
+    document.getElementById('ttlLakiLaki').value = data.ttlLakiLaki || '';
+    document.getElementById('kewarganegaraanLakiLaki').value = data.kewarganegaraanLakiLaki || 'WNI';
+    document.getElementById('agamaLakiLaki').value = data.agamaLakiLaki || 'Islam';
+    document.getElementById('pekerjaanLakiLaki').value = data.pekerjaanLakiLaki || '';
+    document.getElementById('alamatLakiLaki').value = data.alamatLakiLaki || '';
+    
+    // Calon Perempuan
+    document.getElementById('namaPerempuan').value = data.namaPerempuan || '';
+    document.getElementById('bintiPerempuan').value = data.bintiPerempuan || '';
+    document.getElementById('ttlPerempuan').value = data.ttlPerempuan || '';
+    document.getElementById('kewarganegaraanPerempuan').value = data.kewarganegaraanPerempuan || 'WNI';
+    document.getElementById('agamaPerempuan').value = data.agamaPerempuan || 'Islam';
+    document.getElementById('pekerjaanPerempuan').value = data.pekerjaanPerempuan || '';
+    document.getElementById('alamatPerempuan').value = data.alamatPerempuan || '';
+    
+    // Wali Nikah
+    document.getElementById('jenisWali').value = data.jenisWali || 'Nasab';
+    toggleWaliFields();
+    document.getElementById('hubunganWali').value = data.hubunganWali || '';
+    document.getElementById('sebabWali').value = data.sebabWali || '';
+    document.getElementById('namaWali').value = data.namaWali || '';
+    document.getElementById('binWali').value = data.binWali || '';
+    document.getElementById('ttlWali').value = data.ttlWali || '';
+    document.getElementById('kewarganegaraanWali').value = data.kewarganegaraanWali || 'WNI';
+    document.getElementById('agamaWali').value = data.agamaWali || 'Islam';
+    document.getElementById('pekerjaanWali').value = data.pekerjaanWali || '';
+    document.getElementById('alamatWali').value = data.alamatWali || '';
+    
+    // Jadwal Nikah
+    document.getElementById('nomorPemeriksaan').value = data.nomorPemeriksaan || '';
+    document.getElementById('hariNikah').value = data.hariNikah || '';
+    document.getElementById('tanggalNikah').value = data.tanggalNikah || '';
+    document.getElementById('tempatNikah').value = data.tempatNikah || '';
+    
+    // Buka modal form
+    openAddModal();
+}
+
 function parseIndonesianDate(dateStr) {
     if (!dateStr) return null;
     const monthMap = {
